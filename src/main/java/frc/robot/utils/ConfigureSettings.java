@@ -1,13 +1,13 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.util.Units;
-import frc.team_8840_lib.utils.controllers.SCType;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
+import frc.team_8840_lib.utils.controllers.swerve.SwerveType;
 
 public class ConfigureSettings {
     
     public static SwerveSettings getSwerveDriveSettings() {
-        SwerveSettings settings = new SwerveSettings(SCType.SWERVE_SparkMax);
+        SwerveSettings settings = new SwerveSettings(SwerveType.SPARK_MAX);
 
         //Adjust a few PID settings to the type, but we'll have to edit down below a few things.
         settings.defaultAdjustToType();
