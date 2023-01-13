@@ -24,7 +24,7 @@ public final class Main {
    */
   public static void main(String... args) {
     //Assign the listener to ChargedUpRobot
-    Robot.assignListener(new ChargedUpRobot());
+    Robot.assignListener(new ChargedUpRobotTesting());
 
     //Logger will write to the default folder path on the roboRIO (~/8840applogs)
     Logger.setWriter(new FileWriter("default"));

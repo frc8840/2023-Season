@@ -112,17 +112,20 @@ public class ChargedUpRobot extends EventListener {
             REVPhysicsSim.getInstance().run();
         }
 
-        //Update about swerve info
-        CommunicationManager.getInstance().updateSwerveInfo(swerveDrive);
-        //If field exists
-        if (CommunicationManager.getInstance().fieldExists()) {
-            swerveDrive.updateOdometry(); //Update swerve odometry
+        if (swerveDrive != null) {
+            //Update about swerve info
+            CommunicationManager.getInstance().updateSwerveInfo(swerveDrive);
+            
+            //If field exists
+            if (CommunicationManager.getInstance().fieldExists()) {
+                swerveDrive.updateOdometry(); //Update swerve odometry
 
-            //Update the position of the field robot
-            CommunicationManager.getInstance().updateFieldObjectPose("SwerveRobot", swerveDrive.getPose());
+                //Update the position of the field robot
+                CommunicationManager.getInstance().updateFieldObjectPose("SwerveRobot", swerveDrive.getPose());
 
-            //Update even more stuff
-            swerveDrive.updateFieldRobot();
+                //Update even more stuff
+                swerveDrive.updateFieldRobot();
+            }
         }
     }
     
