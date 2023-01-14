@@ -2,6 +2,10 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Path;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import frc.team_8840_lib.listeners.EventListener;
@@ -9,11 +13,11 @@ import frc.team_8840_lib.listeners.EventListener;
 public class ChargedUpRobotTesting extends TimedRobot {
 
     private PWMSparkMax testMotor;
-
     
     public void robotInit() {
+
         testMotor = new PWMSparkMax(0);
-    }
+    }   
 
     
     public void autonomousInit() {
