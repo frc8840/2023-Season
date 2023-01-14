@@ -2,70 +2,42 @@ package frc.robot;
 
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import frc.team_8840_lib.listeners.EventListener;
 
-public class ChargedUpRobotTesting extends EventListener {
+public class ChargedUpRobotTesting extends TimedRobot {
 
     private PWMSparkMax testMotor;
 
-    @Override
+    
     public void robotInit() {
         testMotor = new PWMSparkMax(0);
     }
 
-    @Override
-    public void robotPeriodic() {
-
-    }
-
-    @Override
-    public void onAutonomousEnable() {
+    
+    public void autonomousInit() {
         // TODO Auto-generated method stub
         
     }
 
-    @Override
-    public void onAutonomousPeriodic() {
+    
+    public void autonomousPeriodic() {
         // TODO Auto-generated method stub
         
     }
 
 
-    @Override
-    public void onTeleopEnable() {
+    
+    public void teleopInit() {
         // TODO Auto-generated method stub
         
     }
 
-    @Override
-    public void onTeleopPeriodic() {
+    
+    public void teleopPeriodic() {
         // TODO Auto-generated method stub
         
         testMotor.set(0.5);
-    }
-
-    @Override
-    public void onTestEnable() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onTestPeriodic() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onDisabled() {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void onDisabledPeriodic() {
-        // TODO Auto-generated method stub
-        
     }
 }

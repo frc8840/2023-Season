@@ -17,19 +17,26 @@ import frc.team_8840_lib.listeners.Robot;
 public final class Main {
   private Main() {}
 
+  //set this to false in competition, and remove entirely for production
+  private static final boolean testing = true;
+
   /**
    * Main initialization function. Do not perform any initialization here.
    *
    * <p>If you change your main robot class, change the parameter type.
    */
   public static void main(String... args) {
-    //Assign the listener to ChargedUpRobot
-    Robot.assignListener(new ChargedUpRobotTesting());
+        if (!testing) {
+            //Assign the listener to ChargedUpRobot
+            Robot.assignListener(new ChargedUpRobot());
 
-    //Logger will write to the default folder path on the roboRIO (~/8840applogs)
-    Logger.setWriter(new FileWriter("default"));
+            //Logger will write to the default folder path on the roboRIO (~/8840applogs)
+            Logger.setWriter(new FileWriter("default"));
 
-    //Start the robot
-    RobotBase.startRobot(Robot::new);
-  }
+            //Start the robot
+            RobotBase.startRobot(Robot::new);
+        } else {
+            RobotBase.startRobot(ChargedUpRobotTesting::new);
+        }
+    }
 }
