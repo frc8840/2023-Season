@@ -3,6 +3,7 @@ package frc.robot.testing;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.ConfigureSettings;
 import frc.team_8840_lib.controllers.SwerveModule;
 import frc.team_8840_lib.info.console.Logger;
@@ -18,8 +19,8 @@ public class SingularModuleTesting extends EventListener {
 
     private SwerveModule module;
 
-    private final int drivePort = 0;
-    private final int turnPort = 1;
+    private final int drivePort = 4;
+    private final int turnPort = 3;
     private final int driveEncoderPort = -1;
 
     SimulatedController simController;
@@ -32,7 +33,7 @@ public class SingularModuleTesting extends EventListener {
     public void robotInit() {
         settings = ConfigureSettings.getSwerveDriveSettings();
 
-        module = new SwerveModule(drivePort, turnPort, 1, 0, new CTREConfig(settings));
+        module = new SwerveModule(drivePort, turnPort, driveEncoderPort, 0, new CTREConfig(settings));
 
         simController = new SimulatedController();
     }
@@ -73,9 +74,14 @@ public class SingularModuleTesting extends EventListener {
             .updateInfo("feedback", "speed", speed)
             .updateInfo("feedback", "rotation", rotation);
 
-        Logger.Log("speed: " + speed + " rotation: " + rotation);
+        //Logger.Log("speed: " + speed + " rotation: " + rotation);
 
-        module.setDesiredState(new SwerveModuleState(speed * settings.maxSpeed, new Rotation2d(rotation)), false);
+        SmartDashboard.putNumber("speed", speed);
+        SmartDashboard.putNumber("rotation", rotation);
+        SmartDashboard.putNumber("raw_drive", module.getRawDrivePosition());
+        SmartDashboard.putNumber("raw_turn", module.getRawTurnPosition());
+
+        //module.setDesiredState(new SwerveModuleState(speed * settings.maxSpeed, new Rotation2d(rotation)), false);
     }
 
     // DISABLED METHODS
