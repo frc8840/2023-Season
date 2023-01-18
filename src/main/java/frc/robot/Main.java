@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.testing.ChargedUpRobotTesting;
+import frc.robot.testing.SingularModuleTesting;
 import frc.team_8840_lib.info.console.FileWriter;
 import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.listeners.Robot;
@@ -36,7 +38,15 @@ public final class Main {
             //Start the robot
             RobotBase.startRobot(Robot::new);
         } else {
-            RobotBase.startRobot(ChargedUpRobotTesting::new);
+            //RobotBase.startRobot(ChargedUpRobotTesting::new);
+
+            Robot.assignListener(new SingularModuleTesting());
+
+            //Logger will write to the default folder path on the roboRIO (~/8840applogs)
+            Logger.setWriter(new FileWriter("default"));
+
+            //Start the robot
+            RobotBase.startRobot(Robot::new);
         }
     }
 }
