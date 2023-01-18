@@ -43,7 +43,7 @@ public final class Main {
             Robot.assignListener(new SingularModuleTesting());
 
             //Logger will write to the default folder path on the roboRIO (~/8840applogs)
-            Logger.setWriter(new FileWriter("default"));
+            //Logger.setWriter(new FileWriter("default"));
 
             //Start the robot
             RobotBase.startRobot(Robot::new);
