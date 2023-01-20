@@ -3,6 +3,7 @@ package frc.robot.utils;
 import edu.wpi.first.math.util.Units;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveType;
+import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
 
 public class ConfigureSettings {
     
@@ -31,6 +32,12 @@ public class ConfigureSettings {
 
         //TODO: Check if the gyro is inverted or not.
         settings.invertGyro = false;
+
+        settings.drivePID = new PIDStruct(0.01, 0, 0, 0);
+        
+        settings.driveKA = 0.0;
+        settings.driveKV = 0.0;
+        settings.driveKS = 0.0;
         
         //Once done, we'll update the kinematics to reflect the changes.
         settings.updateKinematics();

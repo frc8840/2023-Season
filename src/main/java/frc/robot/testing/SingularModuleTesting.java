@@ -81,7 +81,7 @@ public class SingularModuleTesting extends EventListener {
         SmartDashboard.putNumber("raw_drive", module.getRawDrivePosition());
         SmartDashboard.putNumber("raw_turn", module.getRawTurnPosition());
 
-        //module.setDesiredState(new SwerveModuleState(speed * settings.maxSpeed, new Rotation2d(rotation)), false);
+        module.setDesiredState(new SwerveModuleState(speed / 2, new Rotation2d(rotation)), false);
     }
 
     // DISABLED METHODS
