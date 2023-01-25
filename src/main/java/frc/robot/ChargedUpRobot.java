@@ -4,17 +4,11 @@ import java.util.TimerTask;
 
 import com.revrobotics.REVPhysicsSim;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.subsystems.BalanceSubsystem;
 import frc.robot.utils.ConfigureSettings;
 import frc.robot.utils.Ports;
 import frc.team_8840_lib.controllers.SwerveGroup;
-import frc.team_8840_lib.examples.SwerveDrive;
 import frc.team_8840_lib.input.communication.CommunicationManager;
-import frc.team_8840_lib.input.controls.GameController;
-import frc.team_8840_lib.input.controls.GameController.Type;
+import frc.team_8840_lib.input.controls.SimulatedController;
 import frc.team_8840_lib.listeners.EventListener;
 import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.pathing.PathPlanner;
@@ -43,6 +37,8 @@ public class ChargedUpRobot extends EventListener {
     private SwerveGroup swerveDrive;
 
     private RobotContainer robotContainer;
+
+    private SimulatedController simulatedController;
 
     //ROBOT INIT
 
@@ -96,12 +92,7 @@ public class ChargedUpRobot extends EventListener {
             }
         }, GamePhase.Autonomous);
 
-        //Add the GameController to the GameControllerManager.
-        if (Robot.isSimulation()) {
-            GameController.expectController(-1, Type.Simulated);
-        } else {
-            GameController.expectController(0, Type.Joystick);
-        }
+        simulatedController = new SimulatedController();
     }
 
     //ROBOT PERIODIC
@@ -134,30 +125,30 @@ public class ChargedUpRobot extends EventListener {
 
     @Override
     public void onAutonomousEnable() {
-
+        swerveDrive.setIndividualBrakeModes(true, false);
     }
 
     public void onFixedAutonomous() {
-        if (pathPlanner == null) {
-            return;
-        }
+        // if (pathPlanner == null) {
+        //     return;
+        // }
         
-        if (!pathPlanner.finished()) {
-            //Get the current pose
-            Pose2d pose = pathPlanner.moveToNext();
-            //Get the last pose
-            Pose2d lastPose = pathPlanner.getLastPose();
+        // if (!pathPlanner.finished()) {
+        //     //Get the current pose
+        //     Pose2d pose = pathPlanner.moveToNext();
+        //     //Get the last pose
+        //     Pose2d lastPose = pathPlanner.getLastPose();
 
-            //Find the difference between the two poses
-            double xDiff = (pose.getTranslation().getX() - lastPose.getTranslation().getX());
-            double yDiff = (pose.getTranslation().getY() - lastPose.getTranslation().getY());
+        //     //Find the difference between the two poses
+        //     double xDiff = (pose.getTranslation().getX() - lastPose.getTranslation().getX());
+        //     double yDiff = (pose.getTranslation().getY() - lastPose.getTranslation().getY());
 
-            //Create a new translation with the difference
-            Translation2d translation = new Translation2d(xDiff / Robot.DELTA_TIME, yDiff / Robot.DELTA_TIME);
+        //     //Create a new translation with the difference
+        //     Translation2d translation = new Translation2d(xDiff / Robot.DELTA_TIME, yDiff / Robot.DELTA_TIME);
 
-            //Use pose to calculate the swerve module states
-            swerveDrive.drive(translation, pose.getRotation().getRadians(), true, false);
-        }
+        //     //Use pose to calculate the swerve module states
+        //     swerveDrive.drive(translation, pose.getRotation().getRadians(), true, false);
+        // }
     }
 
     @Override
@@ -169,7 +160,7 @@ public class ChargedUpRobot extends EventListener {
 
     @Override
     public void onTeleopEnable() {
-
+        swerveDrive.setIndividualBrakeModes(true, false);
     }
 
     @Override
@@ -196,8 +187,7 @@ public class ChargedUpRobot extends EventListener {
 
     @Override
     public void onTestEnable() {
-        // TODO Auto-generated method stub
-        
+        swerveDrive.setBrakeModes(false);
     }
 
     @Override

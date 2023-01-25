@@ -21,7 +21,7 @@ public final class Main {
   private Main() {}
 
   //set this to false in competition, and remove entirely for production
-  private static final boolean testing = true;
+  private static final boolean testing = false;
 
   /**
    * Main initialization function. Do not perform any initialization here.
@@ -34,7 +34,7 @@ public final class Main {
             Robot.assignListener(new ChargedUpRobot());
 
             //Logger will write to the default folder path on the roboRIO (~/8840applogs)
-            Logger.setWriter(new FileWriter("default"));
+            Logger.setWriter(new EmptyLogger());
 
             //Start the robot
             RobotBase.startRobot(Robot::new);

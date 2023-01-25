@@ -163,3 +163,6 @@ bin/
 
 !libs/*.jar
 !lib/*.jar
+
+# Ignore Gradle build output directory
+build

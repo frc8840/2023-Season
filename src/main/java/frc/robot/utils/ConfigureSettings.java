@@ -13,17 +13,18 @@ public class ConfigureSettings {
         //Adjust a few PID settings to the type, but we'll have to edit down below a few things.
         settings.defaultAdjustToType();
 
-        //We don't know the track width or wheel base yet, so we'll leave it blank for now.
-        settings.trackWidth = 0.0;
-        settings.wheelBase = 0.0;
+        //Track width is 18.75in, and wheel base is 27.75in.
+        settings.trackWidth = Units.inchesToMeters(18.75);
+        settings.wheelBase = Units.inchesToMeters(27.75);
 
         //We know the wheel diameter, so we'll set it here.
         //TODO: Ask fabrication or design teams for the precise wheel diameter (again).
         settings.wheelDiameter = Units.inchesToMeters(3.94);
 
-        //TODO: Ask fabrication or design teams for the precise drive gear ratio (should be found on the Swerve Drive Specialties website).
-        settings.driveGearRatio = 6.86;
-        settings.angleGearRatio = 12.8;
+        //Drive Gear Ratio is 6.75 to 1
+        settings.driveGearRatio = 6.75;
+        //Angle Gear Ratio is 150/7 to 1
+        settings.angleGearRatio = 150.0/7.0;
 
         settings.angleOffsets[0] = 0; //First module
         settings.angleOffsets[1] = 0; //Second module
