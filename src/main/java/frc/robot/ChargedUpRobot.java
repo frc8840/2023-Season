@@ -4,6 +4,7 @@ import java.util.TimerTask;
 
 import com.revrobotics.REVPhysicsSim;
 
+import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.utils.ConfigureSettings;
 import frc.robot.utils.Ports;
 import frc.team_8840_lib.controllers.SwerveGroup;
@@ -12,7 +13,6 @@ import frc.team_8840_lib.input.controls.SimulatedController;
 import frc.team_8840_lib.listeners.EventListener;
 import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.pathing.PathPlanner;
-import frc.team_8840_lib.utils.GamePhase;
 import frc.team_8840_lib.utils.controllers.Pigeon;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 
@@ -39,6 +39,7 @@ public class ChargedUpRobot extends EventListener {
     private RobotContainer robotContainer;
 
     private SimulatedController simulatedController;
+    public Joystick joystick;
 
     //ROBOT INIT
 
@@ -75,24 +76,25 @@ public class ChargedUpRobot extends EventListener {
 
         //Set a listener to wait for the autonomous path to be set through the dashboard.
         //When it's set, we'll pass it over to the path planner.
-        CommunicationManager.getInstance().waitForAutonomousPath(points -> {
-            if (points.length == 0) {
-                //Ignore it. This can happen to request the autonomous to be set to nothing, but we can ignore it.
-                return;
-            }
-            pathPlanner = new PathPlanner();
-            pathPlanner.updateTimePoints(points);
-        });
+        // CommunicationManager.getInstance().waitForAutonomousPath(points -> {
+        //     if (points.length == 0) {
+        //         //Ignore it. This can happen to request the autonomous to be set to nothing, but we can ignore it.
+        //         return;
+        //     }
+        //     pathPlanner = new PathPlanner();
+        //     pathPlanner.updateTimePoints(points);
+        // });
 
         //Subscribe the fixed autonomous method to the Autonomous phase, running at a fixed rate of 0.03125 seconds.
-        Robot.getInstance().subscribeFixedPhase(new TimerTask() {
-            @Override
-            public void run() {
-                onFixedAutonomous();
-            }
-        }, GamePhase.Autonomous);
+        // Robot.getInstance().subscribeFixedPhase(new TimerTask() {
+        //     @Override
+        //     public void run() {
+        //         onFixedAutonomous();
+        //     }
+        // }, GamePhase.Autonomous);
 
         simulatedController = new SimulatedController();
+        //joystick = new Joystick(0);
     }
 
     //ROBOT PERIODIC
