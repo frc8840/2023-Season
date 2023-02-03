@@ -14,7 +14,7 @@ public class ConfigureSettings {
         //Adjust a few PID settings to the type, but we'll have to edit down below a few things.
         settings.defaultAdjustToType();
 
-        //Track width is 18.75in, and wheel base is 27.75in.
+        //Track width is 18.75in, and wheel base is 22.75in.
         settings.trackWidth = Units.inchesToMeters(18.75);
         settings.wheelBase = Units.inchesToMeters(22.75);
 
@@ -27,21 +27,17 @@ public class ConfigureSettings {
         //Angle Gear Ratio is 150/7 to 1
         settings.angleGearRatio = 150.0/7.0;
 
-        // settings.angleOffsets[0] = 77.43; //First module
-        // settings.angleOffsets[1] = 35.51; //Second module
-        // settings.angleOffsets[2] = 138.33; //Third module
-        // settings.angleOffsets[3] = 324.14; //Fourth module
-
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 0;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 0;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 77.43;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 35.51;
         
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 0;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 0;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 324.14;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 138.33;
 
         //TODO: Check if the gyro is inverted or not.
         settings.invertGyro = false;
 
         settings.drivePID = new PIDStruct(0.01, 0, 0, 0);
+        settings.turnPID = new PIDStruct(0.01, 0, 0, 0);
         
         settings.driveKA = 0.0;
         settings.driveKV = 0.0;
