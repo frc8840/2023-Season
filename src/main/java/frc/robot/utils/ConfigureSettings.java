@@ -15,7 +15,7 @@ public class ConfigureSettings {
 
         //Track width is 18.75in, and wheel base is 27.75in.
         settings.trackWidth = Units.inchesToMeters(18.75);
-        settings.wheelBase = Units.inchesToMeters(27.75);
+        settings.wheelBase = Units.inchesToMeters(22.75);
 
         //We know the wheel diameter, so we'll set it here.
         //TODO: Ask fabrication or design teams for the precise wheel diameter (again).
