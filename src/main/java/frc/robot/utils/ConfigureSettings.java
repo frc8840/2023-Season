@@ -1,6 +1,7 @@
 package frc.robot.utils;
 
 import edu.wpi.first.math.util.Units;
+import frc.team_8840_lib.controllers.SwerveGroup;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveType;
 import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
@@ -26,10 +27,16 @@ public class ConfigureSettings {
         //Angle Gear Ratio is 150/7 to 1
         settings.angleGearRatio = 150.0/7.0;
 
-        settings.angleOffsets[0] = 0; //First module
-        settings.angleOffsets[1] = 0; //Second module
-        settings.angleOffsets[2] = 0; //Third module
-        settings.angleOffsets[3] = 0; //Fourth module
+        // settings.angleOffsets[0] = 77.43; //First module
+        // settings.angleOffsets[1] = 35.51; //Second module
+        // settings.angleOffsets[2] = 138.33; //Third module
+        // settings.angleOffsets[3] = 324.14; //Fourth module
+
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 0;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 0;
+        
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 0;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 0;
 
         //TODO: Check if the gyro is inverted or not.
         settings.invertGyro = false;

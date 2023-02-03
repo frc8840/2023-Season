@@ -48,29 +48,31 @@ public class ChargedUpRobot extends EventListener {
         //Generate the SwerveSettings object.
         SwerveSettings settings = ConfigureSettings.getSwerveDriveSettings();
 
+        int[] drivePorts = new int[4];
+        int[] turnPorts = new int[4];
+        int[] encoderPorts = new int[4];
+
+        drivePorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = Ports.TopLeft.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = Ports.TopLeft.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = Ports.TopLeft.ENCODER;
+
+        drivePorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = Ports.TopRight.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = Ports.TopRight.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = Ports.TopRight.ENCODER;
+
+        drivePorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = Ports.BottomLeft.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = Ports.BottomLeft.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = Ports.BottomLeft.ENCODER;
+
+        drivePorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = Ports.BottomRight.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = Ports.BottomRight.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = Ports.BottomRight.ENCODER;
+
         //Set the SwerveGroup object to the swerve drive.
         swerveDrive = new SwerveGroup("NEO Swerve Drive", settings,
-                new int[] { //Drive IDs
-                    Ports.TopLeft.DRIVE,
-                    Ports.TopRight.DRIVE,
-                    Ports.BottomLeft.DRIVE,
-                    Ports.BottomRight.DRIVE
-                }, 
-
-                new int[] { //Turn/Steering IDs
-                    Ports.TopLeft.TURN,
-                    Ports.TopRight.TURN,
-                    Ports.BottomLeft.TURN,
-                    Ports.BottomRight.TURN
-                }, 
-
-                new int[] { //Encoder IDs
-                    Ports.TopLeft.ENCODER, 
-                    Ports.TopRight.ENCODER, 
-                    Ports.BottomLeft.ENCODER, 
-                    Ports.BottomRight.ENCODER
-                },
-
+                drivePorts,
+                turnPorts,
+                encoderPorts,
                 new Pigeon(Pigeon.Type.TWO, Ports.PIGEON_ID, false)
         );
 

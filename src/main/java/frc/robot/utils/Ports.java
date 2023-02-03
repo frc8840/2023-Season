@@ -1,8 +1,6 @@
 package frc.robot.utils;
 
 public class Ports {
-    //TODO: Change these to the correct ports.
-
     public static class TopLeft {
         public static final int DRIVE = 11;
         public static final int TURN = 12;
@@ -15,13 +13,13 @@ public class Ports {
         public static final int ENCODER = 22;
     }
 
-    public static class BottomLeft {
+    public static class BottomRight {
         public static final int DRIVE = 15;
         public static final int TURN = 16;
         public static final int ENCODER = 21;
     }
 
-    public static class BottomRight {
+    public static class BottomLeft {
         public static final int DRIVE = 13;
         public static final int TURN = 14;
         public static final int ENCODER = 24;
