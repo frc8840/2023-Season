@@ -4,6 +4,7 @@ import java.util.TimerTask;
 
 import com.revrobotics.REVPhysicsSim;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.utils.ConfigureSettings;
 import frc.robot.utils.Ports;
@@ -96,7 +97,7 @@ public class ChargedUpRobot extends EventListener {
         // }, GamePhase.Autonomous);
 
         simulatedController = new SimulatedController();
-        //joystick = new Joystick(0);
+        joystick = new Joystick(0);
     }
 
     //ROBOT PERIODIC
@@ -167,10 +168,32 @@ public class ChargedUpRobot extends EventListener {
         swerveDrive.setIndividualBrakeModes(true, false);
     }
 
+    boolean inXFormation = false;
+
     @Override
     public void onTeleopPeriodic() {
         // TODO Auto-generated method stub
-        
+        double x = joystick.getRawAxis(0);
+        double y = -joystick.getRawAxis(1);
+
+        double turn = joystick.getRawAxis(2);
+
+        if (joystick.getRawButtonPressed(1)) {
+            inXFormation = !inXFormation;
+            
+            if (inXFormation) {
+                swerveDrive.applyXBrake();
+            }
+        }
+
+        if (inXFormation) return;
+
+        if (Math.abs(x) < 0.01 || Math.abs(y) < 0.01) {
+            return;
+        }
+
+        //do open loop control
+        swerveDrive.drive(new Translation2d(y, x), turn, false, true);
     }
 
     // DISABLED METHODS

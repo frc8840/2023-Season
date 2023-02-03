@@ -42,6 +42,8 @@ public class ConfigureSettings {
         settings.driveKA = 0.0;
         settings.driveKV = 0.0;
         settings.driveKS = 0.0;
+
+        settings.maxSpeed = 1.0;
         
         //Once done, we'll update the kinematics to reflect the changes.
         settings.updateKinematics();
