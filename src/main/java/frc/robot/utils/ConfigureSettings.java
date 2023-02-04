@@ -27,14 +27,25 @@ public class ConfigureSettings {
         //Angle Gear Ratio is 150/7 to 1
         settings.angleGearRatio = 150.0/7.0;
 
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 77.43;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 35.51;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 77.53;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 35.24;
         
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 324.14;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 138.33;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 325.63;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 139.57;
 
-        //TODO: Check if the gyro is inverted or not.
+        /*
+         * TODO:
+         * - Check if the gyro is inverted or not.
+         * - Check if the CANCoder is inverted or not.
+         * - Check if the turn motors are inverted or not.
+         * - Check if the drive motors are inverted or not.
+         * 
+         */
         settings.invertGyro = false;
+
+        settings.canCoderInverted = true;
+        settings.driveInverted = false;
+        settings.turnInverted = false;
 
         settings.drivePID = new PIDStruct(0.01, 0, 0, 0);
         settings.turnPID = new PIDStruct(0.01, 0, 0, 0);
