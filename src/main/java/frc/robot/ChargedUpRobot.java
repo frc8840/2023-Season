@@ -171,6 +171,8 @@ public class ChargedUpRobot extends EventListener {
 
     boolean inXFormation = false;
     boolean inLockMode = false;
+    
+    boolean inNoLock = false;
 
     @Override
     public void onTeleopPeriodic() {
@@ -182,6 +184,22 @@ public class ChargedUpRobot extends EventListener {
         SmartDashboard.putNumber("Y", y);
 
         double turn = joystick.getRawAxis(2);
+
+        if (joystick.getRawButtonPressed(11)) {
+            inNoLock = !inNoLock;
+
+            if (inNoLock) {
+                SmartDashboard.putString("No Lock", "On");
+                swerveDrive.setIndividualBrakeModes(true, false);
+            } else {
+                SmartDashboard.putString("No Lock", "Off");
+                swerveDrive.setIndividualBrakeModes(true, false);
+            }
+        }
+
+        if (inNoLock) {
+            return;
+        }
 
         if (joystick.getRawButtonPressed(8)) {
             inLockMode = !inLockMode;
