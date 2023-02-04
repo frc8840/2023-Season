@@ -43,9 +43,9 @@ public class ConfigureSettings {
          */
         settings.invertGyro = false;
 
-        settings.canCoderInverted = true;
+        settings.canCoderInverted = false;
+        settings.turnInverted = true;
         settings.driveInverted = false;
-        settings.turnInverted = false;
 
         settings.drivePID = new PIDStruct(0.01, 0, 0, 0);
         settings.turnPID = new PIDStruct(0.01, 0, 0, 0);
