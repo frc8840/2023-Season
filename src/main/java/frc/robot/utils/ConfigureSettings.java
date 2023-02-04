@@ -35,10 +35,7 @@ public class ConfigureSettings {
 
         /*
          * TODO:
-         * - Check if the gyro is inverted or not.
-         * - Check if the CANCoder is inverted or not.
-         * - Check if the turn motors are inverted or not.
-         * - Check if the drive motors are inverted or not.
+         * 
          * 
          */
         settings.invertGyro = false;

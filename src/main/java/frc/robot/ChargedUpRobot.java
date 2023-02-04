@@ -6,6 +6,7 @@ import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.ConfigureSettings;
 import frc.robot.utils.Ports;
 import frc.team_8840_lib.controllers.SwerveGroup;
@@ -169,6 +170,7 @@ public class ChargedUpRobot extends EventListener {
     }
 
     boolean inXFormation = false;
+    boolean inLockMode = false;
 
     @Override
     public void onTeleopPeriodic() {
@@ -178,11 +180,30 @@ public class ChargedUpRobot extends EventListener {
 
         double turn = joystick.getRawAxis(2);
 
+        if (joystick.getRawButtonPressed(8)) {
+            inLockMode = !inLockMode;
+
+            if (inLockMode) {
+                //Set all modules to 0 degrees
+                swerveDrive.setAllModuleAngles(0);
+                SmartDashboard.putString("to 0 degrees", "On");
+            } else {
+                SmartDashboard.putString("to 0 degrees", "Off");
+            }
+        }
+
+        if (inLockMode) return;
+
         if (joystick.getRawButtonPressed(1)) {
             inXFormation = !inXFormation;
             
             if (inXFormation) {
                 swerveDrive.applyXBrake();
+                SmartDashboard.putString("X Formation", "On");
+                swerveDrive.setIndividualBrakeModes(true, true);
+            } else {
+                swerveDrive.setIndividualBrakeModes(true, false);
+                SmartDashboard.putString("X Formation", "Off");
             }
         }
 
@@ -193,7 +214,7 @@ public class ChargedUpRobot extends EventListener {
         }
 
         //do open loop control
-        swerveDrive.drive(new Translation2d(y, x), turn, false, true);
+        //swerveDrive.drive(new Translation2d(y, x), turn, false, true);
     }
 
     // DISABLED METHODS
