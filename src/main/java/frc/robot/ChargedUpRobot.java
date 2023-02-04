@@ -178,21 +178,26 @@ public class ChargedUpRobot extends EventListener {
         double x = joystick.getRawAxis(0);
         double y = -joystick.getRawAxis(1);
 
+        SmartDashboard.putNumber("X", x);
+        SmartDashboard.putNumber("Y", y);
+
         double turn = joystick.getRawAxis(2);
 
         if (joystick.getRawButtonPressed(8)) {
             inLockMode = !inLockMode;
 
             if (inLockMode) {
-                //Set all modules to 0 degrees
-                swerveDrive.setAllModuleAngles(0);
                 SmartDashboard.putString("to 0 degrees", "On");
             } else {
                 SmartDashboard.putString("to 0 degrees", "Off");
             }
         }
 
-        if (inLockMode) return;
+        if (inLockMode) {
+            //Set all modules to 0 degrees
+            swerveDrive.setAllModuleAngles(0);
+            return;
+        }
 
         if (joystick.getRawButtonPressed(1)) {
             inXFormation = !inXFormation;
@@ -214,7 +219,7 @@ public class ChargedUpRobot extends EventListener {
         }
 
         //do open loop control
-        //swerveDrive.drive(new Translation2d(y, x), turn, false, true);
+        swerveDrive.drive(new Translation2d(y, x), 0, false, true);
     }
 
     // DISABLED METHODS
