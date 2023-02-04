@@ -52,6 +52,9 @@ public class ConfigureSettings {
         settings.driveKS = 0.0;
 
         settings.maxSpeed = 1.0;
+
+        //We don't want to do manual conversion.
+        settings.doManualConversion = false;
         
         //Once done, we'll update the kinematics to reflect the changes.
         settings.updateKinematics();
