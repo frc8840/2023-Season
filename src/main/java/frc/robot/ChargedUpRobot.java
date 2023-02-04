@@ -4,6 +4,8 @@ import java.util.TimerTask;
 
 import com.revrobotics.REVPhysicsSim;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -99,6 +101,13 @@ public class ChargedUpRobot extends EventListener {
 
         simulatedController = new SimulatedController();
         joystick = new Joystick(0);
+
+        //Wait till the swerve drive is ready to be used
+        Robot.getRealInstance()
+            .waitForFullfillConditions(5000, () -> swerveDrive.ready())
+            .onFinishFullfillment(() -> {
+                swerveDrive.resetOdometry(new Pose2d(7, 4, new Rotation2d(0)));
+            });
     }
 
     //ROBOT PERIODIC
