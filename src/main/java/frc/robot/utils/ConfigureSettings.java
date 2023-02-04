@@ -27,11 +27,11 @@ public class ConfigureSettings {
         //Angle Gear Ratio is 150/7 to 1
         settings.angleGearRatio = 150.0/7.0;
 
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 77.53;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 35.24;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 74.17;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 35.51;
         
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 325.63;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 139.57;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 144.14;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 139.31;
 
         /*
          * TODO:
