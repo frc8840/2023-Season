@@ -246,7 +246,7 @@ public class ChargedUpRobot extends EventListener {
         }
 
         //do open loop control
-        swerveDrive.drive(new Translation2d(y, x), 0, false, true);
+        //swerveDrive.drive(new Translation2d(y, x), 0, false, true);
     }
 
     // DISABLED METHODS
