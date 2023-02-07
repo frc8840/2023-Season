@@ -7,6 +7,7 @@ import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.ConfigureSettings;
@@ -195,6 +196,17 @@ public class ChargedUpRobot extends EventListener {
         SmartDashboard.putNumber("Y", y);
 
         double turn = joystick.getRawAxis(2);
+
+        if (joystick.getRawButtonPressed(10)) {
+            testSpeed = !testSpeed;
+        }
+
+        if (testSpeed) {
+            swerveDrive.getModules()[2].setSpeed(
+                new SwerveModuleState(0.5, new Rotation2d(0)), false
+            );
+            return;
+        }
 
         if (joystick.getRawButtonPressed(11)) {
             inNoLock = !inNoLock;
