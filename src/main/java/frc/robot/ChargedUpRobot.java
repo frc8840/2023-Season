@@ -186,6 +186,8 @@ public class ChargedUpRobot extends EventListener {
 
     boolean testSpeed = false;
 
+    double angleTo = 0;
+
     @Override
     public void onTeleopPeriodic() {
         // TODO Auto-generated method stub
@@ -199,12 +201,28 @@ public class ChargedUpRobot extends EventListener {
 
         if (joystick.getRawButtonPressed(10)) {
             testSpeed = !testSpeed;
+
+            if (!testSpeed) {
+                swerveDrive.setIndividualBrakeModes(false, false);
+            } else {
+                swerveDrive.setIndividualBrakeModes(true, false);
+            }
+        }
+
+        if (joystick.getRawButton(9)) {
+            angleTo += 1;
         }
 
         if (testSpeed) {
-            swerveDrive.getModules()[2].setSpeed(
-                new SwerveModuleState(0.5, new Rotation2d(0)), false
+            // swerveDrive.getModules()[2].setSpeed(
+            //     new SwerveModuleState(0.5, new Rotation2d(0)), false
+            // );
+            swerveDrive.getModules()[2].setAngle(
+                new SwerveModuleState(0, Rotation2d.fromDegrees(angleTo)),
+                true
             );
+            return;
+        } else if (!testSpeed) {
             return;
         }
 

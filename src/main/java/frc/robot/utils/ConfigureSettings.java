@@ -44,8 +44,8 @@ public class ConfigureSettings {
         settings.turnInverted = true;
         settings.driveInverted = false;
 
-        settings.drivePID = new PIDStruct(0.05, 0, 0, 0);
-        settings.turnPID = new PIDStruct(0.6, 0, 0, 0);
+        settings.drivePID = new PIDStruct(0.025, 0, 0, 0);
+        settings.turnPID = new PIDStruct(0.025, 0, 0, 0);
         
         settings.driveKA = 0.0;
         settings.driveKV = 0.0;
