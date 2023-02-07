@@ -183,6 +183,8 @@ public class ChargedUpRobot extends EventListener {
     
     boolean inNoLock = false;
 
+    boolean testSpeed = false;
+
     @Override
     public void onTeleopPeriodic() {
         // TODO Auto-generated method stub
