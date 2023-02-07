@@ -3,7 +3,7 @@ package frc.robot.testing;
 import com.revrobotics.REVPhysicsSim;
 
 import frc.robot.utils.ConfigureSettings;
-import frc.robot.utils.Ports;
+import frc.robot.utils.ModuleConstants;
 import frc.team_8840_lib.controllers.SwerveGroup;
 import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.listeners.EventListener;
@@ -23,27 +23,27 @@ public class EmptySwerve extends EventListener {
         //Set the SwerveGroup object to the swerve drive.
         swerveDrive = new SwerveGroup("NEO Swerve Drive", settings,
                 new int[] { //Drive IDs
-                    Ports.TopLeft.DRIVE,
-                    Ports.TopRight.DRIVE,
-                    Ports.BottomLeft.DRIVE,
-                    Ports.BottomRight.DRIVE
+                    ModuleConstants.TopLeft.DRIVE,
+                    ModuleConstants.TopRight.DRIVE,
+                    ModuleConstants.BottomLeft.DRIVE,
+                    ModuleConstants.BottomRight.DRIVE
                 }, 
 
                 new int[] { //Turn/Steering IDs
-                    Ports.TopLeft.TURN,
-                    Ports.TopRight.TURN,
-                    Ports.BottomLeft.TURN,
-                    Ports.BottomRight.TURN
+                    ModuleConstants.TopLeft.TURN,
+                    ModuleConstants.TopRight.TURN,
+                    ModuleConstants.BottomLeft.TURN,
+                    ModuleConstants.BottomRight.TURN
                 }, 
 
                 new int[] { //Encoder IDs
-                    Ports.TopLeft.ENCODER, 
-                    Ports.TopRight.ENCODER, 
-                    Ports.BottomLeft.ENCODER, 
-                    Ports.BottomRight.ENCODER
+                    ModuleConstants.TopLeft.ENCODER, 
+                    ModuleConstants.TopRight.ENCODER, 
+                    ModuleConstants.BottomLeft.ENCODER, 
+                    ModuleConstants.BottomRight.ENCODER
                 },
 
-                new Pigeon(Pigeon.Type.TWO, Ports.PIGEON_ID, false)
+                new Pigeon(Pigeon.Type.TWO, ModuleConstants.PIGEON_ID, false)
         );        
     }
 

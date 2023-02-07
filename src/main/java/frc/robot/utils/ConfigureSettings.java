@@ -27,11 +27,11 @@ public class ConfigureSettings {
         //Angle Gear Ratio is 150/7 to 1
         settings.angleGearRatio = 150.0/7.0;
 
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = 74.17;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = 35.51;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.OFFSET;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.OFFSET;
         
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = 144.14;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = 139.31;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = ModuleConstants.BottomLeft.OFFSET;
+        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = ModuleConstants.BottomRight.OFFSET;
 
         /*
          * TODO:
@@ -55,6 +55,8 @@ public class ConfigureSettings {
 
         //We don't want to do manual conversion.
         settings.doManualConversion = false;
+        //We want to use manual offset.
+        settings.manualOffset = true;
         
         //Once done, we'll update the kinematics to reflect the changes.
         settings.updateKinematics();

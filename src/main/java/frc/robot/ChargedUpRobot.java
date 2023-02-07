@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.ConfigureSettings;
-import frc.robot.utils.Ports;
+import frc.robot.utils.ModuleConstants;
 import frc.team_8840_lib.controllers.SwerveGroup;
 import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.input.controls.SimulatedController;
@@ -56,28 +56,28 @@ public class ChargedUpRobot extends EventListener {
         int[] turnPorts = new int[4];
         int[] encoderPorts = new int[4];
 
-        drivePorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = Ports.TopLeft.DRIVE;
-        turnPorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = Ports.TopLeft.TURN;
-        encoderPorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = Ports.TopLeft.ENCODER;
+        drivePorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.ENCODER;
 
-        drivePorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = Ports.TopRight.DRIVE;
-        turnPorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = Ports.TopRight.TURN;
-        encoderPorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = Ports.TopRight.ENCODER;
+        drivePorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.ENCODER;
 
-        drivePorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = Ports.BottomLeft.DRIVE;
-        turnPorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = Ports.BottomLeft.TURN;
-        encoderPorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = Ports.BottomLeft.ENCODER;
+        drivePorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = ModuleConstants.BottomLeft.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = ModuleConstants.BottomLeft.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = ModuleConstants.BottomLeft.ENCODER;
 
-        drivePorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = Ports.BottomRight.DRIVE;
-        turnPorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = Ports.BottomRight.TURN;
-        encoderPorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = Ports.BottomRight.ENCODER;
+        drivePorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = ModuleConstants.BottomRight.DRIVE;
+        turnPorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = ModuleConstants.BottomRight.TURN;
+        encoderPorts[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = ModuleConstants.BottomRight.ENCODER;
 
         //Set the SwerveGroup object to the swerve drive.
         swerveDrive = new SwerveGroup("NEO Swerve Drive", settings,
                 drivePorts,
                 turnPorts,
                 encoderPorts,
-                new Pigeon(Pigeon.Type.TWO, Ports.PIGEON_ID, false)
+                new Pigeon(Pigeon.Type.TWO, ModuleConstants.PIGEON_ID, false)
         );
 
         //Set a listener to wait for the autonomous path to be set through the dashboard.
