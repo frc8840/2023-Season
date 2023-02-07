@@ -188,6 +188,9 @@ public class ChargedUpRobot extends EventListener {
 
     double angleTo = 0;
 
+    double facing = 0;
+    double angularVelocity = 1;
+
     @Override
     public void onTeleopPeriodic() {
         // TODO Auto-generated method stub
@@ -209,8 +212,12 @@ public class ChargedUpRobot extends EventListener {
             }
         }
 
-        if (joystick.getRawButton(9)) {
-            angleTo += 1;
+        if (joystick.getRawButtonPressed(7)) {
+            angleTo -= 90;
+        } else if (joystick.getRawButtonPressed(9)) {
+            angleTo += 90;
+        } else if (joystick.getRawButtonPressed(2)) {
+            angleTo = 0;
         }
 
         if (testSpeed) {
@@ -262,7 +269,6 @@ public class ChargedUpRobot extends EventListener {
             inXFormation = !inXFormation;
             
             if (inXFormation) {
-                swerveDrive.applyXBrake();
                 SmartDashboard.putString("X Formation", "On");
                 swerveDrive.setIndividualBrakeModes(true, true);
             } else {
@@ -271,14 +277,21 @@ public class ChargedUpRobot extends EventListener {
             }
         }
 
-        if (inXFormation) return;
-
-        if (Math.abs(x) < 0.01 || Math.abs(y) < 0.01) {
+        if (inXFormation) {
+            swerveDrive.applyXBrake();
             return;
         }
 
-        //do open loop control
-        //swerveDrive.drive(new Translation2d(y, x), 0, false, true);
+        if ((Math.abs(x) < 0.01 || Math.abs(y) < 0.01) || turn < 0.01) {
+            return;
+        }
+
+        if (turn >= 0.01) {
+            facing += angularVelocity * turn;
+            SmartDashboard.putNumber("Facing °", facing);
+        }
+
+        //swerveDrive.drive(new Translation2d(x, y), facing, true, false);
     }
 
     // DISABLED METHODS
