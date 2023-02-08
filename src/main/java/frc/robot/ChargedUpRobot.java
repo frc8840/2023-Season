@@ -200,6 +200,15 @@ public class ChargedUpRobot extends EventListener {
 
         double turn = joystick.getRawAxis(2);
 
+        if (joystick.getRawButtonPressed(12)) {
+            testSpeed = !testSpeed;
+        }
+
+        if (testSpeed) {
+            swerveDrive.getModules()[2].setSpeed(3 / swerveDrive.getSettings().maxSpeed);
+            return;
+        }
+
         if (joystick.getRawButtonPressed(11)) {
             inNoLock = !inNoLock;
 
