@@ -229,8 +229,6 @@ public class ChargedUpRobot extends EventListener {
                 true
             );
             return;
-        } else if (!testSpeed) {
-            return;
         }
 
         if (joystick.getRawButtonPressed(11)) {
