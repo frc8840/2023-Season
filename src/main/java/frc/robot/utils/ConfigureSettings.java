@@ -51,7 +51,7 @@ public class ConfigureSettings {
         settings.driveKV = 0.0;
         settings.driveKS = 0.0;
 
-        settings.maxSpeed = 1.0;
+        settings.maxSpeed = SwerveSettings.SDS.MK4i.L2.maxSpeed_NEO;
 
         //We don't want to do manual conversion.
         settings.doManualConversion = false;

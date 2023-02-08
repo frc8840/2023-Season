@@ -186,8 +186,6 @@ public class ChargedUpRobot extends EventListener {
 
     boolean testSpeed = false;
 
-    double angleTo = 0;
-
     double facing = 0;
     double angularVelocity = 1;
 
@@ -201,35 +199,6 @@ public class ChargedUpRobot extends EventListener {
         SmartDashboard.putNumber("Y", y);
 
         double turn = joystick.getRawAxis(2);
-
-        if (joystick.getRawButtonPressed(10)) {
-            testSpeed = !testSpeed;
-
-            if (!testSpeed) {
-                swerveDrive.setIndividualBrakeModes(false, false);
-            } else {
-                swerveDrive.setIndividualBrakeModes(true, false);
-            }
-        }
-
-        if (joystick.getRawButtonPressed(7)) {
-            angleTo -= 90;
-        } else if (joystick.getRawButtonPressed(9)) {
-            angleTo += 90;
-        } else if (joystick.getRawButtonPressed(2)) {
-            angleTo = 0;
-        }
-
-        if (testSpeed) {
-            // swerveDrive.getModules()[2].setSpeed(
-            //     new SwerveModuleState(0.5, new Rotation2d(0)), false
-            // );
-            swerveDrive.getModules()[2].setAngle(
-                new SwerveModuleState(0, Rotation2d.fromDegrees(angleTo)),
-                true
-            );
-            return;
-        }
 
         if (joystick.getRawButtonPressed(11)) {
             inNoLock = !inNoLock;
@@ -281,6 +250,7 @@ public class ChargedUpRobot extends EventListener {
         }
 
         if ((Math.abs(x) < 0.01 || Math.abs(y) < 0.01) || turn < 0.01) {
+            swerveDrive.stop();
             return;
         }
 
@@ -289,7 +259,7 @@ public class ChargedUpRobot extends EventListener {
             SmartDashboard.putNumber("Facing °", facing);
         }
 
-        //swerveDrive.drive(new Translation2d(x, y), facing, true, false);
+        //swerveDrive.drive(new Translation2d(x, y), facing, true, true);
     }
 
     // DISABLED METHODS
