@@ -249,17 +249,19 @@ public class ChargedUpRobot extends EventListener {
             return;
         }
 
-        if ((Math.abs(x) < 0.01 || Math.abs(y) < 0.01) || turn < 0.01) {
-            swerveDrive.stop();
-            return;
-        }
-
         if (turn >= 0.01) {
             facing += angularVelocity * turn;
             SmartDashboard.putNumber("Facing °", facing);
         }
 
-        //swerveDrive.drive(new Translation2d(x, y), facing, true, true);
+        if ((Math.abs(x) < 0.01 && Math.abs(y) < 0.01) && turn < 0.01) {
+            swerveDrive.stop();
+            return;
+        }
+
+        Translation2d movement = new Translation2d(y, x).times(3);
+
+        swerveDrive.drive(movement, facing, true, true);
     }
 
     // DISABLED METHODS
