@@ -20,6 +20,7 @@ import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.pathing.PathPlanner;
 import frc.team_8840_lib.utils.controllers.Pigeon;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
+import frc.team_8840_lib.utils.controls.Axis;
 
 public class ChargedUpRobot extends EventListener {
 
@@ -192,8 +193,8 @@ public class ChargedUpRobot extends EventListener {
     @Override
     public void onTeleopPeriodic() {
         // TODO Auto-generated method stub
-        double x = joystick.getRawAxis(0);
-        double y = -joystick.getRawAxis(1);
+        double x = Robot.isReal() ? joystick.getRawAxis(0) : simulatedController.getAxis(Axis.Horizontal);
+        double y = Robot.isReal() ? -joystick.getRawAxis(1) : simulatedController.getAxis(Axis.Vertical);
 
         SmartDashboard.putNumber("X", x);
         SmartDashboard.putNumber("Y", y);
@@ -238,6 +239,7 @@ public class ChargedUpRobot extends EventListener {
         if (inLockMode) {
             //Set all modules to 0 degrees
             swerveDrive.setAllModuleAngles(0);
+            swerveDrive.stop();
             return;
         }
 
@@ -255,12 +257,14 @@ public class ChargedUpRobot extends EventListener {
 
         if (inXFormation) {
             swerveDrive.applyXBrake();
+            swerveDrive.stop();
             return;
         }
 
         if (turn >= 0.01) {
             facing += angularVelocity * turn;
-            SmartDashboard.putNumber("Facing °", facing);
+            SmartDashboard.putNumber("Facing", facing);
+            SmartDashboard.updateValues();
         }
 
         if ((Math.abs(x) < 0.01 && Math.abs(y) < 0.01) && turn < 0.01) {
@@ -268,9 +272,15 @@ public class ChargedUpRobot extends EventListener {
             return;
         }
 
+        double facingRad = Math.toRadians(facing);
         Translation2d movement = new Translation2d(y, x).times(3);
 
-        swerveDrive.drive(movement, facing, true, true);
+        CommunicationManager.getInstance().logSwerveStates(
+            "Swerve Drive",
+            "Swerve States",
+            swerveDrive.driveStates(movement, 0, true, true)
+        );
+        //swerveDrive.drive(movement, facing, true, true);
     }
 
     // DISABLED METHODS
