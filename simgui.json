@@ -173,6 +173,18 @@
             }
           }
         },
+        "Swerve Module 0": {
+          "open": true
+        },
+        "Swerve Module 1": {
+          "open": true
+        },
+        "Swerve Module 2": {
+          "open": true
+        },
+        "Swerve Module 3": {
+          "open": true
+        },
         "open": true,
         "simcontrols": {
           "joystick": {
