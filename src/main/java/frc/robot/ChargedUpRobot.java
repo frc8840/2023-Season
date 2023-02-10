@@ -102,6 +102,7 @@ public class ChargedUpRobot extends EventListener {
         // }, GamePhase.Autonomous);
 
         swerveDrive.providePower(false);
+        swerveDrive.doStateOptimization(false);
 
         simulatedController = new SimulatedController();
         joystick = new Joystick(0);
