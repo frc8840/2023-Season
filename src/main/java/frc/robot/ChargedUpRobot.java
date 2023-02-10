@@ -103,6 +103,7 @@ public class ChargedUpRobot extends EventListener {
 
         swerveDrive.providePower(false);
         swerveDrive.doStateOptimization(false);
+        swerveDrive.doSetAngle(false);
 
         simulatedController = new SimulatedController();
         joystick = new Joystick(0);
