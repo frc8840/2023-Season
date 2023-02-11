@@ -4,6 +4,7 @@ import java.util.TimerTask;
 
 import com.revrobotics.REVPhysicsSim;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -21,6 +22,7 @@ import frc.team_8840_lib.pathing.PathPlanner;
 import frc.team_8840_lib.utils.controllers.Pigeon;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 import frc.team_8840_lib.utils.controls.Axis;
+import frc.team_8840_lib.utils.math.MathUtils;
 
 public class ChargedUpRobot extends EventListener {
 
@@ -101,12 +103,15 @@ public class ChargedUpRobot extends EventListener {
         //     }
         // }, GamePhase.Autonomous);
 
-        swerveDrive.providePower(false);
-        swerveDrive.doStateOptimization(false);
-        swerveDrive.doSetAngle(false);
+        swerveDrive.providePower(true);
+        swerveDrive.doStateOptimization(true);
+        swerveDrive.doSetAngle(true);
+        swerveDrive.doSetSpeed(true);
 
         simulatedController = new SimulatedController();
         joystick = new Joystick(0);
+
+        CommunicationManager.getInstance().createField();
 
         //Wait till the swerve drive is ready to be used
         Robot.getRealInstance()
@@ -147,6 +152,7 @@ public class ChargedUpRobot extends EventListener {
     @Override
     public void onAutonomousEnable() {
         swerveDrive.setIndividualBrakeModes(true, false);
+        swerveDrive.resetOdometry(new Pose2d(7, 4, new Rotation2d(0)));
     }
 
     public void onFixedAutonomous() {
@@ -276,8 +282,8 @@ public class ChargedUpRobot extends EventListener {
             return;
         }
 
-        double facingRad = Math.toRadians(facing);
-        Translation2d movement = new Translation2d(y, 0).times(3);
+        double facingRad = Math.toRadians(facing); 
+        Translation2d movement = new Translation2d(0.1, 0.3).times(3);
 
         // CommunicationManager.getInstance().logSwerveStates(
         //     "Swerve Drive",

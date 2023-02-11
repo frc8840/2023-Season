@@ -189,13 +189,13 @@
         "simcontrols": {
           "joystick": {
             "open": true
-          },
-          "open": true
+          }
         },
         "swerve_drive": {
           "module_0": {
             "open": true
-          }
+          },
+          "open": true
         }
       },
       "LiveWindow": {
