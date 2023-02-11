@@ -104,7 +104,7 @@ public class ChargedUpRobot extends EventListener {
         // }, GamePhase.Autonomous);
 
         swerveDrive.providePower(true);
-        swerveDrive.doStateOptimization(true);
+        swerveDrive.doStateOptimization(false);
         swerveDrive.doSetAngle(true);
         swerveDrive.doSetSpeed(true);
 
@@ -294,7 +294,7 @@ public class ChargedUpRobot extends EventListener {
         //Don't continue if 4 is pressed
         if (!joystick.getRawButton(4)) return;
 
-        swerveDrive.drive(movement, 0, true, true);
+        swerveDrive.drive(movement, 0, false, true);
     }
 
     // DISABLED METHODS
