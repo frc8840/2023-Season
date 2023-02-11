@@ -277,10 +277,10 @@ public class ChargedUpRobot extends EventListener {
             SmartDashboard.updateValues();
         }
 
-        if ((Math.abs(x) < 0.01 && Math.abs(y) < 0.01) && turn < 0.01) {
-            swerveDrive.stop();
-            return;
-        }
+        // if ((Math.abs(x) < 0.01 && Math.abs(y) < 0.01) && turn < 0.01) {
+        //     swerveDrive.stop();
+        //     return;
+        // }
 
         double facingRad = Math.toRadians(facing); 
         Translation2d movement = new Translation2d(0.1, 0.3).times(3);
@@ -290,6 +290,8 @@ public class ChargedUpRobot extends EventListener {
         //     "Swerve States",
         //     swerveDrive.driveStates(movement, 0, true, true)
         // );
+
+        if (!joystick.getRawButton(4)) return;
 
         swerveDrive.drive(movement, 0, true, true);
     }
