@@ -291,6 +291,7 @@ public class ChargedUpRobot extends EventListener {
         //     swerveDrive.driveStates(movement, 0, true, true)
         // );
 
+        //Don't continue if 4 is pressed
         if (!joystick.getRawButton(4)) return;
 
         swerveDrive.drive(movement, 0, true, true);
