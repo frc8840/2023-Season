@@ -44,8 +44,10 @@ public class ConfigureSettings {
         settings.turnInverted = true;
         settings.driveInverted = false;
 
+        settings.reverseDrive(SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex(), SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex());
+
         settings.drivePID = new PIDStruct(0.025, 0, 0, 0);
-        settings.turnPID = new PIDStruct(0.015, 0, 0, 0);
+        settings.turnPID = new PIDStruct(0.012, 0, 0, 0);
         
         settings.driveKA = 0.0;
         settings.driveKV = 0.0;
