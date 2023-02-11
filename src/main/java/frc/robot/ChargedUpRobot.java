@@ -283,7 +283,7 @@ public class ChargedUpRobot extends EventListener {
         // }
 
         double facingRad = Math.toRadians(facing); 
-        Translation2d movement = new Translation2d(0.1, 0.3).times(3);
+        Translation2d movement = new Translation2d(y, x).times(3);
 
         // CommunicationManager.getInstance().logSwerveStates(
         //     "Swerve Drive",
