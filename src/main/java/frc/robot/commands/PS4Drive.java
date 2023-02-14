@@ -62,7 +62,7 @@ public class PS4Drive extends CommandBase {
     }
 
     public double getForward() {
-        return controller.getLeftY();
+        return -controller.getLeftY();
     }
 
     public double getStrafe() {
@@ -81,7 +81,7 @@ public class PS4Drive extends CommandBase {
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
         if (driveMode == DriveMode.SPINNY_BOI) {
-            driveSubsystem.getSwerveDrive().spinnyBoi(getForward());
+            driveSubsystem.getSwerveDrive().spinnyBoi(getForward() * 5);
             return;
         } else if (driveMode == DriveMode.X_BRAKE) {
             driveSubsystem.getSwerveDrive().applyXBrake();
@@ -100,7 +100,7 @@ public class PS4Drive extends CommandBase {
 
         Translation2d driveTranslation = new Translation2d(
             getForward(),
-            getStrafe()
+            -getStrafe()
         );
 
         driveTranslation = driveTranslation.times(3);
