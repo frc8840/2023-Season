@@ -47,28 +47,30 @@ public class PS4Drive extends CommandBase {
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
 
-        //Add Triggers to Controllers
-        xModeTrigger = new Trigger(controller::getCrossButtonPressed).onTrue(
-            Commands.runOnce(() -> {
-                if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
-                driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
-                adjustBrakeModeBasedOnMode();
-            })
-        );
+        if (Robot.isReal()) {
+            //Add Triggers to Controllers
+            xModeTrigger = new Trigger(controller::getCrossButtonPressed).onTrue(
+                Commands.runOnce(() -> {
+                    if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
+                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
+                    adjustBrakeModeBasedOnMode();
+                })
+            );
 
-        zeroModeTrigger = new Trigger(controller::getSquareButton).onTrue(
-            Commands.runOnce(() -> {
-                if (!driveMode.normalOr(DriveMode.ZEROED)) return;
-                driveMode = driveMode == DriveMode.NORMAL ? DriveMode.ZEROED : DriveMode.NORMAL;
-            })
-        );
+            zeroModeTrigger = new Trigger(controller::getSquareButton).onTrue(
+                Commands.runOnce(() -> {
+                    if (!driveMode.normalOr(DriveMode.ZEROED)) return;
+                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.ZEROED : DriveMode.NORMAL;
+                })
+            );
 
-        spinnyBoiTrigger = new Trigger(controller::getCircleButton).onTrue(
-            Commands.runOnce(() -> {
-                if (!driveMode.normalOr(DriveMode.SPINNY_BOI)) return;
-                driveMode = driveMode == DriveMode.NORMAL ? DriveMode.SPINNY_BOI : DriveMode.NORMAL;
-            })
-        );
+            spinnyBoiTrigger = new Trigger(controller::getCircleButton).onTrue(
+                Commands.runOnce(() -> {
+                    if (!driveMode.normalOr(DriveMode.SPINNY_BOI)) return;
+                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.SPINNY_BOI : DriveMode.NORMAL;
+                })
+            );
+        }
     }
 
     public double getForward() {
