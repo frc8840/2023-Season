@@ -10,7 +10,10 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.BrakeMode;
 import frc.robot.utils.ControllerConstants;
 import frc.team_8840_lib.info.console.Logger;
+import frc.team_8840_lib.input.controls.SimulatedController;
+import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.utils.GamePhase;
+import frc.team_8840_lib.utils.controls.Axis;
 
 public class PS4Drive extends CommandBase {
     public static enum DriveMode {
@@ -25,6 +28,8 @@ public class PS4Drive extends CommandBase {
 
 
     private PS4Controller controller;
+    private SimulatedController simulatedController;
+
     private DriveSubsystem driveSubsystem;
 
     private DriveMode driveMode = DriveMode.NORMAL;
@@ -34,10 +39,15 @@ public class PS4Drive extends CommandBase {
     private Trigger spinnyBoiTrigger; //Binded to circle button
 
     public PS4Drive(DriveSubsystem driveSubsystem) {
+        //Setup Controllers
         this.controller = new PS4Controller(ControllerConstants.DRIVE_PS4_CONTROLLER);
+        this.simulatedController = new SimulatedController();
+
+        //Setup Drive Subsystem
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
 
+        //Add Triggers to Controllers
         xModeTrigger = new Trigger(controller::getCrossButtonPressed).onTrue(
             Commands.runOnce(() -> {
                 if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
@@ -62,11 +72,11 @@ public class PS4Drive extends CommandBase {
     }
 
     public double getForward() {
-        return -controller.getLeftY();
+        return Robot.isSimulation() ? simulatedController.getAxis(Axis.Vertical) : -controller.getLeftY();
     }
 
     public double getStrafe() {
-        return controller.getLeftX();
+        return Robot.isSimulation() ? simulatedController.getAxis(Axis.Horizontal) : controller.getLeftX();
     }
 
     @Override
