@@ -49,7 +49,7 @@ public class DriveSubsystem extends SubsystemBase {
         );
 
         swerveDrive.providePower(true);
-        swerveDrive.doStateOptimization(false);
+        swerveDrive.doStateOptimization(true);
         swerveDrive.doSetAngle(true);
         swerveDrive.doSetSpeed(true);
     }
