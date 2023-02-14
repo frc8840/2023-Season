@@ -80,8 +80,6 @@ public class PS4Drive extends CommandBase {
         
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
-        if (GamePhase.getCurrentPhase() == GamePhase.Teleop) return;
-
         if (driveMode == DriveMode.SPINNY_BOI) {
             driveSubsystem.getSwerveDrive().spinnyBoi(getForward());
             return;

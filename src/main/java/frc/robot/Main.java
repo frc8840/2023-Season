@@ -5,10 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.testing.ChargedUpRobotTesting;
 import frc.robot.testing.EmptyLogger;
 import frc.robot.testing.SingularModuleTesting;
-import frc.team_8840_lib.info.console.FileWriter;
 import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.listeners.Robot;
 

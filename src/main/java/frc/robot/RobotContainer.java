@@ -1,7 +1,6 @@
 package frc.robot;
 
 import frc.robot.commands.PS4Drive;
-import frc.robot.subsystems.BalanceSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.BrakeMode;
 import frc.team_8840_lib.utils.GamePhase;
@@ -11,7 +10,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         driveSubsystem = new DriveSubsystem();
-        
+
         driveSubsystem.setDefaultCommand(
             new PS4Drive(driveSubsystem)
         );

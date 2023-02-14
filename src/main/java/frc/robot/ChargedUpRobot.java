@@ -5,7 +5,6 @@ import com.revrobotics.REVPhysicsSim;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem.BrakeMode;
 import frc.team_8840_lib.input.communication.CommunicationManager;
-import frc.team_8840_lib.input.controls.SimulatedController;
 import frc.team_8840_lib.listeners.EventListener;
 import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.pathing.PathPlanner;
