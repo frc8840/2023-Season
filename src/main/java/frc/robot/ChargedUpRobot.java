@@ -1,30 +1,14 @@
 package frc.robot;
 
-import java.util.TimerTask;
-
 import com.revrobotics.REVPhysicsSim;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.DriveSubsystem.BrakeMode;
-import frc.robot.utils.ConfigureSettings;
-import frc.robot.utils.ModuleConstants;
-import frc.team_8840_lib.controllers.SwerveGroup;
 import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.input.controls.SimulatedController;
 import frc.team_8840_lib.listeners.EventListener;
 import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.pathing.PathPlanner;
-import frc.team_8840_lib.utils.controllers.Pigeon;
-import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
-import frc.team_8840_lib.utils.controls.Axis;
-import frc.team_8840_lib.utils.math.MathUtils;
 
 public class ChargedUpRobot extends EventListener {
 
@@ -46,17 +30,10 @@ public class ChargedUpRobot extends EventListener {
 
     private RobotContainer m_robotContainer;
 
-    private SimulatedController simulatedController;
-    public Joystick joystick;
-
     //ROBOT INIT
-
     @Override
     public void robotInit() {
         m_robotContainer = new RobotContainer();
-
-        simulatedController = new SimulatedController();
-        joystick = new Joystick(0);
 
         CommunicationManager.getInstance().createField();
 
