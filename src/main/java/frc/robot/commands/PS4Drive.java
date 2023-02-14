@@ -26,6 +26,7 @@ public class PS4Drive extends CommandBase {
         }
     }
 
+    private final static double maxSpeed = 3;
 
     private PS4Controller controller;
     private SimulatedController simulatedController;
@@ -37,6 +38,8 @@ public class PS4Drive extends CommandBase {
     private Trigger xModeTrigger; //Binded to cross button
     private Trigger zeroModeTrigger; //Binded to square button
     private Trigger spinnyBoiTrigger; //Binded to circle button
+
+    private double rotation = 0;
 
     public PS4Drive(DriveSubsystem driveSubsystem) {
         //Setup Controllers
@@ -81,6 +84,14 @@ public class PS4Drive extends CommandBase {
         return Robot.isSimulation() ? simulatedController.getAxis(Axis.Horizontal) : controller.getLeftX();
     }
 
+    public double getRightX() {
+        return Robot.isSimulation() ? Math.cos(simulatedController.getAxis(Axis.Rotation)) : controller.getRightX();
+    }
+
+    public double getRightY() {
+        return Robot.isSimulation() ? Math.sin(simulatedController.getAxis(Axis.Vertical)) : controller.getRightY();
+    }
+
     @Override
     public void initialize() {
         Logger.Log("[" + getName() + "] Initialized.");
@@ -110,14 +121,16 @@ public class PS4Drive extends CommandBase {
             return;
         }
 
+        //rotation += getRightX() * 0.1;
+
         Translation2d driveTranslation = new Translation2d(
             getForward(),
             -getStrafe()
         );
 
-        driveTranslation = driveTranslation.times(3);
+        driveTranslation = driveTranslation.times(maxSpeed);
 
-        driveSubsystem.getSwerveDrive().drive(driveTranslation, 0, false, true);
+        driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightY(), false, true);
     }
 
     public void adjustBrakeModeBasedOnMode() {
