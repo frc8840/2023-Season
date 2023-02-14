@@ -92,6 +92,11 @@ public class PS4Drive extends CommandBase {
             driveSubsystem.getSwerveDrive().stop();
             return;
         }
+        
+        if (Math.abs(getForward()) < 0.1 && Math.abs(getStrafe()) < 0.1) {
+            driveSubsystem.getSwerveDrive().stop();
+            return;
+        }
 
         Translation2d driveTranslation = new Translation2d(
             getForward(),
