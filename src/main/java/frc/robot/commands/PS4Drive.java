@@ -104,7 +104,7 @@ public class PS4Drive extends CommandBase {
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
         if (driveMode == DriveMode.SPINNY_BOI) {
-            driveSubsystem.getSwerveDrive().spinnyBoi(getForward() * 5);
+            driveSubsystem.getSwerveDrive().spinnyBoi(Math.PI / 2);
             return;
         } else if (driveMode == DriveMode.X_BRAKE) {
             driveSubsystem.getSwerveDrive().applyXBrake();
