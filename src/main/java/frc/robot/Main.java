@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.testing.EmptyLogger;
 import frc.robot.testing.SingularModuleTesting;
+import frc.team_8840_lib.info.console.FileWriter;
 import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.listeners.Robot;
 
@@ -31,8 +32,17 @@ public final class Main {
             //Assign the listener to ChargedUpRobot
             Robot.assignListener(new ChargedUpRobot());
 
-            //Logger will write to the default folder path on the roboRIO (~/8840applogs)
-            Logger.setWriter(new EmptyLogger());
+            String os = System.getProperty("os.name");
+            System.out.println("[MAIN] Using OS " + os + ".");
+            if (os.startsWith("Mac OS X")) {
+                //Logger will write to the default folder path on the roboRIO (~/8840applogs)
+                Logger.setWriter(new FileWriter());
+                System.out.println("[MAIN] Initialized with FileWriter.");
+            } else {
+                //Don't log if not on the test machine.
+                Logger.setWriter(new EmptyLogger());
+                System.out.println("[MAIN] Initialized with EmptyLogger.");
+            }
 
             //Start the robot
             RobotBase.startRobot(Robot::new);

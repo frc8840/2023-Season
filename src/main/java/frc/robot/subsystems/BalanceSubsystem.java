@@ -93,11 +93,12 @@ public class BalanceSubsystem extends SubsystemBase implements Loggable {
     }
 
     @AutoLog(name="BalanceSubsystem", logtype=LogType.BYTE_ARRAY)
-    public void logToNTAndLogs() {
+    public double[] logToNTAndLogs() {
         CommunicationManager.getInstance()
             .updateInfo("systems", "balancing/pid_value", lastPIDOutput)
             .updateInfo("systems", "balancing/max_speed", maxSpeed)
             .updateInfo("systems", "balancing/gyro_value", getGyroValue());
+        return new double[] {lastPIDOutput, maxSpeed, getGyroValue()};
     }
 
 
