@@ -92,6 +92,13 @@ public class PS4Drive extends CommandBase {
         return Robot.isSimulation() ? Math.sin(simulatedController.getAxis(Axis.Vertical)) : controller.getRightY();
     }
 
+    public void setRumble(double leftIntensity, double rightIntensity) {
+        if (Robot.isReal()) {
+            controller.setRumble(PS4Controller.RumbleType.kLeftRumble, leftIntensity);
+            controller.setRumble(PS4Controller.RumbleType.kRightRumble, rightIntensity);
+        }
+    }
+
     @Override
     public void initialize() {
         Logger.Log("[" + getName() + "] Initialized.");
@@ -105,19 +112,23 @@ public class PS4Drive extends CommandBase {
 
         if (driveMode == DriveMode.SPINNY_BOI) {
             driveSubsystem.getSwerveDrive().spinnyBoi(Math.PI / 2);
+            setRumble(0.2, 0.2);
             return;
         } else if (driveMode == DriveMode.X_BRAKE) {
             driveSubsystem.getSwerveDrive().applyXBrake();
             driveSubsystem.getSwerveDrive().stop();
+            setRumble(0.2, 0.2);
             return;
         } else if (driveMode == DriveMode.ZEROED) {
             driveSubsystem.getSwerveDrive().setAllModuleAngles(0);
             driveSubsystem.getSwerveDrive().stop();
+            setRumble(0.2, 0.2);
             return;
         }
         
         if (Math.abs(getForward()) < 0.1 && Math.abs(getStrafe()) < 0.1) {
             driveSubsystem.getSwerveDrive().stop();
+            setRumble(0, 0);
             return;
         }
 
@@ -125,8 +136,10 @@ public class PS4Drive extends CommandBase {
 
         Translation2d driveTranslation = new Translation2d(
             getForward(),
-            -getStrafe()
+            getStrafe()
         );
+
+        setRumble(getStrafe() < 0.1 ? Math.abs(getStrafe()) / 2 : 0, getStrafe() > 0.1 ? Math.abs(getStrafe()) / 2 : 0);
 
         driveTranslation = driveTranslation.times(maxSpeed);
 

@@ -5,6 +5,7 @@ import frc.team_8840_lib.controllers.SwerveGroup;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveType;
 import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
+import frc.team_8840_lib.utils.math.operators.Operation;
 
 public class ConfigureSettings {
     
@@ -41,8 +42,15 @@ public class ConfigureSettings {
         settings.invertGyro = false;
 
         settings.canCoderInverted = false;
-        settings.turnInverted = true;
+        settings.turnInverted = false;
         settings.driveInverted = false;
+
+        settings.invertEncoder(
+            SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex(),
+            SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex(),
+            SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex(),
+            SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()
+        );
 
         settings.reverseDrive(SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex(), SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex());
 
