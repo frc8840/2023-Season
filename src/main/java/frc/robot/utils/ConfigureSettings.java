@@ -41,7 +41,7 @@ public class ConfigureSettings {
          */
         settings.invertGyro = false;
 
-        settings.canCoderInverted = false;
+        settings.canCoderInverted = true;
         settings.turnInverted = false;
         settings.driveInverted = false;
 
