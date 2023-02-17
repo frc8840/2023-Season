@@ -43,7 +43,7 @@ public class ConfigureSettings {
 
         settings.canCoderInverted = true;
         settings.turnInverted = false;
-        settings.driveInverted = false;
+        settings.driveInverted = true;
 
         settings.reverseDrive(SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex(), SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex());
 
