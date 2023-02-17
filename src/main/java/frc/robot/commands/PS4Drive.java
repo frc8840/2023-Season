@@ -57,10 +57,6 @@ public class PS4Drive extends CommandBase {
                     if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
                     adjustBrakeModeBasedOnMode();
-
-                    if (driveMode == DriveMode.X_BRAKE) {
-                        setRumble(0.2, 0.2);
-                    }
                 })
             );
 
@@ -68,10 +64,6 @@ public class PS4Drive extends CommandBase {
                 Commands.runOnce(() -> {
                     if (!driveMode.normalOr(DriveMode.ZEROED)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.ZEROED : DriveMode.NORMAL;
-
-                    if (driveMode == DriveMode.ZEROED) {
-                        setRumble(0.2, 0.2);
-                    }
                 })
             );
 
@@ -79,10 +71,6 @@ public class PS4Drive extends CommandBase {
                 Commands.runOnce(() -> {
                     if (!driveMode.normalOr(DriveMode.SPINNY_BOI)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.SPINNY_BOI : DriveMode.NORMAL;
-
-                    if (driveMode == DriveMode.SPINNY_BOI) {
-                        setRumble(0.2, 0.2);
-                    }
                 })
             );
         }
@@ -124,14 +112,17 @@ public class PS4Drive extends CommandBase {
 
         if (driveMode == DriveMode.SPINNY_BOI) {
             driveSubsystem.getSwerveDrive().spinnyBoi(Math.PI / 2);
+            setRumble(0.2, 0.2);
             return;
         } else if (driveMode == DriveMode.X_BRAKE) {
             driveSubsystem.getSwerveDrive().applyXBrake();
             driveSubsystem.getSwerveDrive().stop();
+            setRumble(0.2, 0.2);
             return;
         } else if (driveMode == DriveMode.ZEROED) {
             driveSubsystem.getSwerveDrive().setAllModuleAngles(0);
             driveSubsystem.getSwerveDrive().stop();
+            setRumble(0.2, 0.2);
             return;
         }
         
