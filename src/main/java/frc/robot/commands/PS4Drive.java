@@ -1,7 +1,10 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -20,7 +23,8 @@ public class PS4Drive extends CommandBase {
         NORMAL,
         X_BRAKE,
         ZEROED,
-        SPINNY_BOI;
+        SPINNY_BOI,
+        TESTING;
         public boolean normalOr(DriveMode driveMode) {
             return this == NORMAL || this == driveMode;
         }
@@ -38,6 +42,7 @@ public class PS4Drive extends CommandBase {
     private Trigger xModeTrigger; //Binded to cross button
     private Trigger zeroModeTrigger; //Binded to square button
     private Trigger spinnyBoiTrigger; //Binded to circle button
+    private Trigger testTrigger;
 
     private double rotation = 0;
 
@@ -73,6 +78,13 @@ public class PS4Drive extends CommandBase {
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.SPINNY_BOI : DriveMode.NORMAL;
                 })
             );
+
+            testTrigger = new Trigger(controller::getTriangleButton).onTrue(
+                Commands.runOnce(() -> {
+                    if (!driveMode.normalOr(DriveMode.TESTING)) return;
+                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.TESTING : DriveMode.NORMAL;
+                })
+            );
         }
     }
 
@@ -104,6 +116,9 @@ public class PS4Drive extends CommandBase {
         Logger.Log("[" + getName() + "] Initialized.");
     }
 
+    private int count = 0;
+    private double testrot = 0;
+
     @Override
     public void execute() {
         if (GamePhase.getCurrentPhase() != GamePhase.Teleop) return;
@@ -111,7 +126,7 @@ public class PS4Drive extends CommandBase {
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
         if (driveMode == DriveMode.SPINNY_BOI) {
-            driveSubsystem.getSwerveDrive().spinnyBoi(Math.PI / 2);
+            driveSubsystem.getSwerveDrive().spin(Math.PI / 2);
             setRumble(0.2, 0.2);
             return;
         } else if (driveMode == DriveMode.X_BRAKE) {
@@ -123,6 +138,24 @@ public class PS4Drive extends CommandBase {
             driveSubsystem.getSwerveDrive().setAllModuleAngles(0);
             driveSubsystem.getSwerveDrive().stop();
             setRumble(0.2, 0.2);
+            return;
+        } else if (driveMode == DriveMode.TESTING) {
+            if (controller.getL2ButtonPressed()) {
+                count += 1;
+                testrot = 0;
+            }
+
+            int index = count % 4;
+
+            if (controller.getR2Button()) {
+                testrot += 1;
+            }
+
+            driveSubsystem.getSwerveDrive().getModules()[index].setDesiredState(
+                new SwerveModuleState(0.5, Rotation2d.fromDegrees(testrot))
+            , true, true);
+            
+            controller.setRumble(RumbleType.kBothRumble, 0.75);
             return;
         }
         
