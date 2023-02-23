@@ -58,7 +58,14 @@ public class VisionSubsystem extends SubsystemBase {
         if (Robot.isSimulation()) return;
         if (!Robot.getRealInstance().ready()) return;
 
-        PhotonPipelineResult result = camera.getLatestResult();
+        PhotonPipelineResult result;
+
+        try {
+            result = camera.getLatestResult();
+        } catch (Exception e) {
+            //We'll just try again next time.
+            return;
+        }
 
         boolean hasTarget = result.hasTargets();
 
