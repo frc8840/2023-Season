@@ -37,11 +37,11 @@ public class ChargedUpRobot extends EventListener {
         CommunicationManager.getInstance().createField();
 
         //Wait till the swerve drive is ready to be used
-        Robot.getRealInstance()
-            .waitForFullfillConditions(5000, () -> m_robotContainer.getDriveSubsystem().ready())
-            .onFinishFullfillment(() -> {
-                m_robotContainer.getDriveSubsystem().resetOdometry();
-            });
+        // Robot.getRealInstance()
+        //     .waitForFullfillConditions(5000, () -> m_robotContainer.getDriveSubsystem().ready())
+        //     .onFinishFullfillment(() -> {
+        //         m_robotContainer.getDriveSubsystem().resetOdometry();
+        //     });
     }
 
     //ROBOT PERIODIC
@@ -120,7 +120,7 @@ public class ChargedUpRobot extends EventListener {
 
     @Override
     public void onTestEnable() {
-        m_robotContainer.getDriveSubsystem().setBrakeMode(BrakeMode.COAST);
+        //m_robotContainer.getDriveSubsystem().setBrakeMode(BrakeMode.COAST);
     }
 
     @Override

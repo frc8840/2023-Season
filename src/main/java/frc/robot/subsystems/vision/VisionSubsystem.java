@@ -56,13 +56,18 @@ public class VisionSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (Robot.isSimulation()) return;
+        if (!Robot.getRealInstance().ready()) return;
 
         PhotonPipelineResult result = camera.getLatestResult();
 
         boolean hasTarget = result.hasTargets();
 
         if (hasTarget) {
-            estimatedRobotPose = poseEstimator.update().get();
+            try {
+                estimatedRobotPose = poseEstimator.update().get();
+            } catch (Exception e) {
+                return;
+            }
         }
 
         this.hasTarget = hasTarget;

@@ -22,13 +22,13 @@ public class RobotContainer {
     public RobotContainer() {
         instance = this;
 
-        driveSubsystem = new DriveSubsystem();
+        //driveSubsystem = new DriveSubsystem();
         visionSubsystem = new VisionSubsystem();
         //armSubsystem = new ArmSubsystem();
 
-        driveSubsystem.setDefaultCommand(
-            new PS4Drive(driveSubsystem)
-        );
+        // driveSubsystem.setDefaultCommand(
+        //     new PS4Drive(driveSubsystem)
+        // );
 
         visionSubsystem.setDefaultCommand(
             new EstimatePosition(visionSubsystem)
