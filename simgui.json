@@ -83,6 +83,17 @@
     "SmartDashboard": {
       "open": true
     },
+    "retained": {
+      "8840-lib": {
+        "custom_component": {
+          "canvas": {
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      }
+    },
     "transitory": {
       "8840-lib": {
         "IO": {
@@ -183,6 +194,9 @@
           "open": true
         },
         "Swerve Module 3": {
+          "open": true
+        },
+        "arm": {
           "open": true
         },
         "open": true,

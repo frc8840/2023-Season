@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.displays.DisplayContainer;
 import frc.robot.testing.EmptyLogger;
 import frc.robot.testing.SingularModuleTesting;
 import frc.team_8840_lib.info.console.FileWriter;
@@ -27,7 +28,9 @@ public final class Main {
    *
    * <p>If you change your main robot class, change the parameter type.
    */
-  public static void main(String... args) {
+    public static void main(String... args) {
+        DisplayContainer.init();
+
         if (!testing) {
             //Assign the listener to ChargedUpRobot
             Robot.assignListener(new ChargedUpRobot());
