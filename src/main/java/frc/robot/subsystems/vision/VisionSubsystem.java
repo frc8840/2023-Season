@@ -1,6 +1,7 @@
 package frc.robot.subsystems.vision;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.crypto.dsig.Transform;
 
@@ -71,9 +72,12 @@ public class VisionSubsystem extends SubsystemBase {
 
         if (hasTarget) {
             try {
-                estimatedRobotPose = poseEstimator.update().get();
+                Optional<EstimatedRobotPose> poseResult = poseEstimator.update(result);
+                if (poseResult.isPresent()) {
+                    estimatedRobotPose = poseResult.get();
+                }
             } catch (Exception e) {
-                return;
+                //return;
             }
         }
 
