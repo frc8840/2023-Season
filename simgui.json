@@ -86,6 +86,9 @@
     "retained": {
       "8840-lib": {
         "custom_component": {
+          "Placing Display": {
+            "open": true
+          },
           "canvas": {
             "open": true
           },
@@ -184,6 +187,9 @@
             }
           }
         },
+        "Status": {
+          "open": true
+        },
         "Swerve Module 0": {
           "open": true
         },
@@ -199,7 +205,15 @@
         "arm": {
           "open": true
         },
-        "open": true,
+        "auton": {
+          "open": true
+        },
+        "custom_component": {
+          "Placing Display": {
+            "open": true
+          },
+          "open": true
+        },
         "simcontrols": {
           "joystick": {
             "open": true
@@ -209,17 +223,20 @@
           "module_0": {
             "open": true
           },
+          "module_2": {
+            "open": true
+          },
           "open": true
         }
       },
       "LiveWindow": {
+        ".status": {
+          "open": true
+        },
         "open": true
       },
       "Shuffleboard": {
         ".metadata": {
-          "open": true
-        },
-        ".recording": {
           "open": true
         },
         "open": true
@@ -227,7 +244,8 @@
       "SmartDashboard": {
         "Field": {
           "open": true
-        }
+        },
+        "open": true
       }
     }
   }

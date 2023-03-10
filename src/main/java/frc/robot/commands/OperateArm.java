@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.displays.arm.ArmDisplay;
@@ -25,8 +26,8 @@ public class OperateArm extends CommandBase {
     public void execute() {
         armSubsystem.reportToNetworkTables();
 
-        NetworkTableEntry mouseX = CommunicationManager.getInstance().get("custom_component", "canvas/mouse_x");
-        NetworkTableEntry mouseY = CommunicationManager.getInstance().get("custom_component", "canvas/mouse_y");
+        NetworkTableEntry mouseX = CommunicationManager.getInstance().get("custom_component", "Arm Display/canvas/mouse_x");
+        NetworkTableEntry mouseY = CommunicationManager.getInstance().get("custom_component", "Arm Display/canvas/mouse_y");
 
         double rawX = mouseX.getDouble(0);
         double rawY = mouseY.getDouble(0) + (Units.metersToInches(Measurements.Arm.HEIGHT_FROM_GROUND) * 3.5) + 10;
@@ -38,7 +39,7 @@ public class OperateArm extends CommandBase {
             y = (-Measurements.Arm.HEIGHT_FROM_GROUND + ArmSettings.MIN_DIST_OFF_GROUND);
         }
 
-        if (lastMouseStatus != CommunicationManager.getInstance().get("custom_component", "canvas/mouse_down").getBoolean(false)) {
+        if (lastMouseStatus != CommunicationManager.getInstance().get("custom_component", "Arm Display/canvas/mouse_down").getBoolean(false)) {
             lastMouseStatus = !lastMouseStatus;
             if (lastMouseStatus) {
                 flippedArm = !flippedArm;

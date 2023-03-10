@@ -2,10 +2,10 @@ package frc.robot.utils;
 
 import edu.wpi.first.math.util.Units;
 import frc.team_8840_lib.controllers.SwerveGroup;
+import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 import frc.team_8840_lib.utils.controllers.swerve.SwerveType;
 import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
-import frc.team_8840_lib.utils.math.operators.Operation;
 
 public class ConfigureSettings {
     
@@ -28,34 +28,35 @@ public class ConfigureSettings {
         //Angle Gear Ratio is 150/7 to 1
         settings.angleGearRatio = 150.0/7.0;
 
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.OFFSET;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.OFFSET;
-        
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = ModuleConstants.BottomLeft.OFFSET;
-        settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = ModuleConstants.BottomRight.OFFSET;
+        if (Robot.isReal()) {
+            settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.OFFSET;
+            settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.OFFSET;
+            
+            settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_LEFT.getIndex()] = ModuleConstants.BottomLeft.OFFSET;
+            settings.angleOffsets[SwerveGroup.ModuleIndex.kBOTTOM_RIGHT.getIndex()] = ModuleConstants.BottomRight.OFFSET;
+        } else {
+            settings.angleOffsets = new double[] {0,0,0,0};
+        }
 
-        /*
-         * TODO:
-         * 
-         * 
-         */
         settings.invertGyro = false;
 
         settings.canCoderInverted = true;
         settings.turnInverted = false;
         settings.driveInverted = false;
 
-        settings.drivePID = new PIDStruct(0.025, 0, 0, 0);
-        settings.turnPID = new PIDStruct(0.012, 0, 0, 0);
-        
-        settings.driveKA = 0.0;
-        settings.driveKV = 0.0;
-        settings.driveKS = 0.0;
+        if (Robot.isReal()) {
+            settings.drivePID = new PIDStruct(0.025, 0, 0, 0);
+            settings.turnPID = new PIDStruct(0.012, 0, 0, 0);
 
+            settings.driveKA = 0.0;
+            settings.driveKV = 0.0;
+            settings.driveKS = 0.0;
+        }
+        
         settings.maxSpeed = SwerveSettings.SDS.MK4i.L2.maxSpeed_NEO;
 
         //We don't want to do manual conversion.
-        settings.doManualConversion = false;
+        settings.doManualConversion = Robot.isSimulation();
         //We want to use manual offset.
         settings.manualOffset = true;
         

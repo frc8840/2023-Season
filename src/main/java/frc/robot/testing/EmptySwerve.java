@@ -49,49 +49,49 @@ public class EmptySwerve extends EventListener {
 
     @Override
     public void onAutonomousEnable() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onAutonomousPeriodic() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onDisabled() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onDisabledPeriodic() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onTeleopEnable() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onTeleopPeriodic() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onTestEnable() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     @Override
     public void onTestPeriodic() {
-        // TODO Auto-generated method stub
+        
         
     }
 

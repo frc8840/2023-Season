@@ -21,6 +21,11 @@ import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.listeners.Robot;
 
 public class VisionSubsystem extends SubsystemBase {
+    private static VisionSubsystem instance;
+    public static VisionSubsystem getInstance() {
+        return instance;
+    }
+
     private PhotonCamera camera;
     private AprilTagFieldLayout fieldLayout;
     private PhotonPoseEstimator poseEstimator;
@@ -33,6 +38,8 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     public VisionSubsystem() {
+        instance = this;
+
         if (Robot.isReal()) {
             camera = new PhotonCamera(VisionSettings.CAMERA_NAME);
 

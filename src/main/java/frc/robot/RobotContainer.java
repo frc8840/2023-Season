@@ -2,10 +2,12 @@ package frc.robot;
 
 import frc.robot.commands.EstimatePosition;
 import frc.robot.commands.OperateArm;
-import frc.robot.commands.PS4Drive;
+import frc.robot.commands.PS4Operator;
+import frc.robot.commands.XboxDrive;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.BrakeMode;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.team_8840_lib.utils.GamePhase;
 
@@ -18,21 +20,27 @@ public class RobotContainer {
     private DriveSubsystem driveSubsystem;
     private VisionSubsystem visionSubsystem;
     private ArmSubsystem armSubsystem;
+    private GrabberSubsystem grabberSubsystem;
 
     public RobotContainer() {
         instance = this;
 
-        //driveSubsystem = new DriveSubsystem();
-        visionSubsystem = new VisionSubsystem();
+        driveSubsystem = new DriveSubsystem();
+        //visionSubsystem = new VisionSubsystem();
         //armSubsystem = new ArmSubsystem();
+        //grabberSubsystem = new GrabberSubsystem();
 
-        // driveSubsystem.setDefaultCommand(
-        //     new PS4Drive(driveSubsystem)
+        driveSubsystem.setDefaultCommand(
+            new XboxDrive(driveSubsystem)
+        );
+
+        // visionSubsystem.setDefaultCommand(
+        //     new EstimatePosition(visionSubsystem)
         // );
 
-        visionSubsystem.setDefaultCommand(
-            new EstimatePosition(visionSubsystem)
-        );
+        // grabberSubsystem.setDefaultCommand(
+        //     new PS4Operator(grabberSubsystem)
+        // );
 
         // armSubsystem.setDefaultCommand(
         //     new OperateArm(armSubsystem)

@@ -88,13 +88,11 @@ public class SingularModuleTesting extends EventListener {
 
     @Override
     public void onDisabled() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public void onDisabledPeriodic() {
-        // TODO Auto-generated method stub
         
     }
 
@@ -102,13 +100,11 @@ public class SingularModuleTesting extends EventListener {
 
     @Override
     public void onTestEnable() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public void onTestPeriodic() {
-        // TODO Auto-generated method stub
         
     }
 }

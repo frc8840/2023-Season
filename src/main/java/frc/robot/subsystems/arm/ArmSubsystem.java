@@ -19,7 +19,6 @@ import frc.robot.utils.Measurements;
 import frc.team_8840_lib.controllers.specifics.SparkMaxEncoderWrapper;
 import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.listeners.Robot;
-import frc.team_8840_lib.utils.math.MathUtils;
 import frc.team_8840_lib.utils.math.units.Cartesian2d;
 
 import static frc.team_8840_lib.utils.math.MathUtils.*;
@@ -107,7 +106,7 @@ public class ArmSubsystem extends SubsystemBase {
         elbowMotor.enableVoltageCompensation(12);
 
         //TODO: Set position conversion factor
-        baseEncoder.setPositionConversionFactor(1);
+        baseEncoder.setPositionConversionFactor(ArmSettings.Base.GEAR_RATIO);
         elbowEncoder.setPositionConversionFactor(1);
 
         //Set base PID

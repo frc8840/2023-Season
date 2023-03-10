@@ -18,20 +18,20 @@ public class ChargedUpRobotTesting extends TimedRobot {
 
     
     public void autonomousInit() {
-        // TODO Auto-generated method stub
+        
         
     }
 
     
     public void autonomousPeriodic() {
-        // TODO Auto-generated method stub
+        
         
     }
 
 
     
     public void teleopInit() {
-        // TODO Auto-generated method stub
+        
         
     }
 

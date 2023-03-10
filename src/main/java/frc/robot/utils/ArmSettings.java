@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
 
@@ -15,6 +16,8 @@ public class ArmSettings {
         public static final double kV = 0.0;
         public static final double kG = 0.0;
         public static final double kVelocity = 0.0;
+
+        public static double GEAR_RATIO = 1 / 120; //For every 1 rotation of the arm, the motor rotates 120 times.
 
         public static final double armLengthMeters = Units.inchesToMeters(25);
 
@@ -34,6 +37,12 @@ public class ArmSettings {
         public static final double kG = 0.0;
         public static final double kVelocity = 0.0;
 
+        public static double GEAR_RATIO = 1 / 120; //For every 1 rotation of the arm, the motor rotates 120 times.
+
         public static final double armLengthMeters = Units.inchesToMeters(31);
+    }
+
+    public static class Grabber {
+        public static final int PORT = 2;
     }
 }
