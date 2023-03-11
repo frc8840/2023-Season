@@ -148,6 +148,8 @@ public class XboxDrive extends CommandBase {
             controller.setRumble(RumbleType.kBothRumble, 0.75);
             return;
         }
+
+        System.out.println(driveSubsystem.getSwerveDrive().getAngle().getDegrees());
         
         if (Math.abs(getForward()) < 0.1 && Math.abs(getStrafe()) < 0.1) {
             driveSubsystem.getSwerveDrive().stop();
