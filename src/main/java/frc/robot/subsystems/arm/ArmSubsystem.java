@@ -29,6 +29,20 @@ import static frc.team_8840_lib.utils.math.MathUtils.*;
  * @author Sean Kuwamoto, Jaiden Grimminck
  */
 public class ArmSubsystem extends SubsystemBase {
+    public enum ArmStatus {
+        NO_ARM,
+        BASE,
+        BOTH;
+
+        public boolean base() {
+            return this == BASE || this == BOTH;
+        }
+
+        public boolean elbow() {
+            return this == BOTH;
+        }
+    }
+
     public static Translation2d[] SIDE_VIEW_ROBOT = new Translation2d[] {
         //Front corners
         new Translation2d(-Measurements.Robot.LENGTH / 2, 0),
@@ -39,6 +53,8 @@ public class ArmSubsystem extends SubsystemBase {
         new Translation2d(Measurements.Robot.LENGTH / 2, Measurements.Robot.BASE_HEIGHT)
         
     };
+
+    public static final ArmStatus ARM_STATUS = RobotBase.isSimulation() ? ArmStatus.BOTH : ArmStatus.BASE;
 
     private static ArmSubsystem instance;
 
@@ -64,17 +80,22 @@ public class ArmSubsystem extends SubsystemBase {
     public ArmSubsystem() {
         instance = this;
 
-        baseMotor = new CANSparkMax(ArmSettings.Base.PORT, MotorType.kBrushless);
-        elbowMotor = new CANSparkMax(ArmSettings.Elbow.PORT, MotorType.kBrushless);
+        if (ARM_STATUS.base()) {
+            baseMotor = new CANSparkMax(ArmSettings.Base.PORT, MotorType.kBrushless);
+            baseEncoder = new SparkMaxEncoderWrapper(baseMotor);
+            baseFeedforward = new ArmFeedforward(ArmSettings.Base.kS, ArmSettings.Base.kV, ArmSettings.Base.kG);
+            basePID = baseMotor.getPIDController();
+        }
 
-        baseEncoder = new SparkMaxEncoderWrapper(baseMotor);
-        elbowEncoder = new SparkMaxEncoderWrapper(elbowMotor);
+        if (ARM_STATUS.elbow()) {
+            elbowMotor = new CANSparkMax(ArmSettings.Elbow.PORT, MotorType.kBrushless);
 
-        basePID = baseMotor.getPIDController();
-        elbowPID = elbowMotor.getPIDController();
+            elbowEncoder = new SparkMaxEncoderWrapper(elbowMotor);
 
-        baseFeedforward = new ArmFeedforward(ArmSettings.Base.kS, ArmSettings.Base.kV, ArmSettings.Base.kG);
-        elbowFeedforward = new ArmFeedforward(ArmSettings.Elbow.kS, ArmSettings.Elbow.kV, ArmSettings.Elbow.kG);
+            elbowPID = elbowMotor.getPIDController();
+
+            elbowFeedforward = new ArmFeedforward(ArmSettings.Elbow.kS, ArmSettings.Elbow.kV, ArmSettings.Elbow.kG);
+        }
 
         if (RobotBase.isSimulation()) {
             REVPhysicsSim.getInstance().addSparkMax(baseMotor, DCMotor.getNEO(1));
@@ -84,30 +105,18 @@ public class ArmSubsystem extends SubsystemBase {
         configMotors();
     }
 
-    private void configMotors() {
+    public void configureBaseMotor() {
         baseMotor.restoreFactoryDefaults();
-        elbowMotor.restoreFactoryDefaults();
-
+        
         baseMotor.setInverted(ArmSettings.Base.INVERTED);
-        elbowMotor.setInverted(ArmSettings.Elbow.INVERTED);
 
         baseMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        elbowMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
         baseMotor.setSmartCurrentLimit(40);
-        elbowMotor.setSmartCurrentLimit(40);
-
-        //Set secondary current limits to 30 amps
         baseMotor.setSecondaryCurrentLimit(30);
-        elbowMotor.setSecondaryCurrentLimit(30);
-
-        //Enable voltage compensation
         baseMotor.enableVoltageCompensation(12);
-        elbowMotor.enableVoltageCompensation(12);
-
-        //TODO: Set position conversion factor
+        
         baseEncoder.setPositionConversionFactor(ArmSettings.Base.GEAR_RATIO);
-        elbowEncoder.setPositionConversionFactor(1);
 
         //Set base PID
         basePID.setP(ArmSettings.Base.PID.kP);
@@ -115,6 +124,23 @@ public class ArmSubsystem extends SubsystemBase {
         basePID.setD(ArmSettings.Base.PID.kD);
         basePID.setFF(ArmSettings.Base.PID.kF);
         basePID.setIZone(ArmSettings.Base.PID.kIZone);
+
+        //Burn to flash
+        baseMotor.burnFlash();
+    }
+
+    public void configureElbowMotor() {
+        elbowMotor.restoreFactoryDefaults();
+        
+        elbowMotor.setInverted(ArmSettings.Elbow.INVERTED);
+
+        elbowMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+
+        elbowMotor.setSmartCurrentLimit(40);
+        elbowMotor.setSecondaryCurrentLimit(30);
+        elbowMotor.enableVoltageCompensation(12);
+        
+        elbowEncoder.setPositionConversionFactor(ArmSettings.Elbow.GEAR_RATIO);
 
         //Set elbow PID
         elbowPID.setP(ArmSettings.Elbow.PID.kP);
@@ -124,11 +150,16 @@ public class ArmSubsystem extends SubsystemBase {
         elbowPID.setIZone(ArmSettings.Elbow.PID.kIZone);
 
         //Burn to flash
-        baseMotor.burnFlash();
         elbowMotor.burnFlash();
+    }
 
-        baseEncoder.doSubtractionOfStart(true);
-        elbowEncoder.doSubtractionOfStart(true);
+    private void configMotors() {
+        if (ARM_STATUS.base()) {
+            configureBaseMotor();
+        }
+        if (ARM_STATUS.elbow()) {
+            configureElbowMotor();
+        }
     }
 
     public void setPosition(Rotation2d basePosition, Rotation2d elbowPosition) {
@@ -238,6 +269,22 @@ public class ArmSubsystem extends SubsystemBase {
 
     public Rotation2d[] calculatePositions(Translation2d position) {
         return calculatePositions(position, position.getX() > 0);
+    }
+
+    public boolean overextending(Rotation2d baseAngle, Rotation2d elbowAngle) {
+        Translation2d baseJoint = ArmSettings.sideViewCenterToBase;
+
+        Cartesian2d relativeElbow = new Cartesian2d(ArmSettings.Base.armLengthMeters, elbowAngle);
+
+        Translation2d elbowJoint = baseJoint.plus(relativeElbow.toTranslation2d());
+
+        Cartesian2d relativeEndEffector = new Cartesian2d(ArmSettings.Elbow.armLengthMeters, elbowAngle.plus(baseAngle));
+
+        Translation2d endEffector = elbowJoint.plus(relativeEndEffector.toTranslation2d());
+
+        double max_distance = (Measurements.Robot.LENGTH / 2) + Measurements.Rules.EXT_OUTSIDE_FRAME_PERIMETER;
+
+        return abs(endEffector.getX()) > max_distance;
     }
 
     public Rotation2d[] translateToRelativeAngles(Rotation2d[] angles) {

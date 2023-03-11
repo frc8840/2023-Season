@@ -27,8 +27,8 @@ public class RobotContainer {
 
         driveSubsystem = new DriveSubsystem();
         //visionSubsystem = new VisionSubsystem();
-        //armSubsystem = new ArmSubsystem();
-        //grabberSubsystem = new GrabberSubsystem();
+        // armSubsystem = new ArmSubsystem();
+        // grabberSubsystem = new GrabberSubsystem();
 
         driveSubsystem.setDefaultCommand(
             new XboxDrive(driveSubsystem)
@@ -38,12 +38,14 @@ public class RobotContainer {
         //     new EstimatePosition(visionSubsystem)
         // );
 
+        //PS4Operator operator = new PS4Operator(grabberSubsystem, armSubsystem);
+
         // grabberSubsystem.setDefaultCommand(
         //     new PS4Operator(grabberSubsystem)
         // );
 
         // armSubsystem.setDefaultCommand(
-        //     new OperateArm(armSubsystem)
+        //     operator
         // );
     }
 

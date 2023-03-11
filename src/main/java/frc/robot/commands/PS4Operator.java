@@ -3,6 +3,7 @@ package frc.robot.commands;
 import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PS4Controller;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.Measurements;
@@ -47,15 +49,19 @@ public class PS4Operator extends CommandBase {
     private Translation2d startAutoAlignPosition = null;
 
     private GrabberSubsystem grabberSubsystem;
+    private ArmSubsystem armSubsystem;
 
     private OperateState state = OperateState.NONE;
 
     private String side = "blue";
 
-    public PS4Operator(GrabberSubsystem grabberSubsystem) {
+    private double baseAngle = 0;
+
+    public PS4Operator(GrabberSubsystem grabberSubsystem, ArmSubsystem armSubsystem) {
         controller = new PS4Controller(0);//ControllerConstants.OPERATOR_PS4_CONTROLLER);
 
         this.grabberSubsystem = grabberSubsystem;
+        this.armSubsystem = armSubsystem;
 
         coneTrigger = new Trigger(controller::getCrossButton).onTrue(
             Commands.runOnce(() -> {
@@ -117,7 +123,7 @@ public class PS4Operator extends CommandBase {
             })
         );
 
-        addRequirements(grabberSubsystem);
+        addRequirements(grabberSubsystem, armSubsystem);
     }
 
     @Override
@@ -241,6 +247,12 @@ public class PS4Operator extends CommandBase {
             justMoved = false;
         }
     
-        
+        baseAngle += Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() * 0.0001 : 0;
+        SmartDashboard.putNumber("choose_angle", baseAngle);
+
+        if (controller.getCircleButtonPressed()) {
+            SmartDashboard.putNumber("arm_angle", baseAngle);
+            armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
+        }
     }
 }

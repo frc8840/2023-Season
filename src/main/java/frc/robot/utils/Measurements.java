@@ -12,6 +12,10 @@ public class Measurements {
         public static final double BASE_HEIGHT = Units.inchesToMeters(6);
     }
 
+    public static class Rules {
+        public static final double EXT_OUTSIDE_FRAME_PERIMETER = Units.inchesToMeters(48);
+    }
+
     public static class Arm {
         public static final double HEIGHT_FROM_GROUND = Units.inchesToMeters(23.224);
     }

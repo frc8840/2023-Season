@@ -1,11 +1,16 @@
 package frc.robot.utils;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
 
 public class ArmSettings {
     public static final double MIN_DIST_OFF_GROUND = Units.inchesToMeters(2);
+    
+    public static final Translation2d sideViewCenterToBase = new Translation2d(
+        Units.inchesToMeters(0),
+        Units.inchesToMeters(0)
+    );
 
     public static class Base {
         public static final int PORT = 0;

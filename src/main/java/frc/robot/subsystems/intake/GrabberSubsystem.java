@@ -48,14 +48,14 @@ public class GrabberSubsystem extends SubsystemBase {
     public GrabberSubsystem() {
         instance = this;
 
-        state = GrabberState.OPEN;
-        direction = GrabberDirection.IN;
-        loadedPiece = LoadedPiece.NONE;
+        // state = GrabberState.OPEN;
+        // direction = GrabberDirection.IN;
+        // loadedPiece = LoadedPiece.NONE;
 
-        grabberMotor = new CANSparkMax(ArmSettings.Grabber.PORT, MotorType.kBrushless);
-        grabberEncoder = new SparkMaxEncoderWrapper(grabberMotor);
+        // grabberMotor = new CANSparkMax(ArmSettings.Grabber.PORT, MotorType.kBrushless);
+        // grabberEncoder = new SparkMaxEncoderWrapper(grabberMotor);
 
-        this.setupController();
+        // this.setupController();
     }
 
     public void setupController() {
