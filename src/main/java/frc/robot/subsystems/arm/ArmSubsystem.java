@@ -247,9 +247,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void reportToNetworkTables() {
         CommunicationManager.getInstance()
-            .updateInfo("arm", "elbowAngle", getRelativeElbowAngle())
-            .updateInfo("arm", "realElbowAngle", getRealElbowAngle())
-            .updateInfo("arm", "baseAngle", getBaseAngle());
+            .updateInfo("arm", "elbowAngle", ARM_STATUS.elbow() ? getRelativeElbowAngle() : 0)
+            .updateInfo("arm", "realElbowAngle", ARM_STATUS.elbow() ? getRealElbowAngle() : 0)
+            .updateInfo("arm", "baseAngle", ARM_STATUS.base() ? getBaseAngle() : 0);
     }
 
     /**
@@ -451,5 +451,10 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         return baseEncoder.getPosition();
+    }
+
+    @Override
+    public void periodic() {
+        reportToNetworkTables();
     }
 }

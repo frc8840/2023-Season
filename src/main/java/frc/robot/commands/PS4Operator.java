@@ -60,7 +60,7 @@ public class PS4Operator extends CommandBase {
 
     private OperateState state = OperateState.NONE;
 
-    private ArmOperationMode armOperationMode = ArmOperationMode.OPEN_LOOP_MANUAL;
+    private ArmOperationMode armOperationMode = ArmOperationMode.CLOSED_LOOP_MANUAL;
 
     private String side = "blue";
 
