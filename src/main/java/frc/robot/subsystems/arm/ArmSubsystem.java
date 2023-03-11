@@ -106,6 +106,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void configureBaseMotor() {
+        baseEncoder.setManualConversion(Robot.isSimulation());
+
         baseMotor.restoreFactoryDefaults();
         
         baseMotor.setInverted(ArmSettings.Base.INVERTED);
@@ -115,8 +117,18 @@ public class ArmSubsystem extends SubsystemBase {
         baseMotor.setSmartCurrentLimit(40);
         baseMotor.setSecondaryCurrentLimit(30);
         baseMotor.enableVoltageCompensation(12);
+
+        double positionConversionFactor = (1 / ArmSettings.Base.GEAR_RATIO) * 360;
         
-        baseEncoder.setPositionConversionFactor(ArmSettings.Base.GEAR_RATIO);
+        baseEncoder.setPositionConversionFactor(
+            positionConversionFactor
+        );
+
+        double velocityConversionFactor = positionConversionFactor / 60;
+
+        baseEncoder.setVelocityConversionFactor(
+            velocityConversionFactor
+        );
 
         //Set base PID
         basePID.setP(ArmSettings.Base.PID.kP);
@@ -124,6 +136,10 @@ public class ArmSubsystem extends SubsystemBase {
         basePID.setD(ArmSettings.Base.PID.kD);
         basePID.setFF(ArmSettings.Base.PID.kF);
         basePID.setIZone(ArmSettings.Base.PID.kIZone);
+
+        basePID.setOutputRange(-0.3, 0.3);
+
+        basePID.setFeedbackDevice(baseEncoder.getEncoder());
 
         //Burn to flash
         baseMotor.burnFlash();

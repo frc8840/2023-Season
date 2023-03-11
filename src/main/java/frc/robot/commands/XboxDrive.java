@@ -119,7 +119,7 @@ public class XboxDrive extends CommandBase {
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
         if (driveMode == DriveMode.SPINNY_BOI) {
-            driveSubsystem.getSwerveDrive().spin(Math.PI / 2);
+            driveSubsystem.getSwerveDrive().spin(controller.getRightX() * 18);
             return;
         } else if (driveMode == DriveMode.X_BRAKE) {
             driveSubsystem.getSwerveDrive().applyXBrake();
@@ -161,7 +161,7 @@ public class XboxDrive extends CommandBase {
 
         driveTranslation = driveTranslation.times(maxSpeed);
 
-        driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightX(), false, Robot.isReal());
+        driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightX() * 13, false, Robot.isReal());
     }
 
     public void adjustBrakeModeBasedOnMode() {

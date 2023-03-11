@@ -11,8 +11,8 @@ public class ModuleConstants {
     }
 
     public static class TopRight {
-        public static final int DRIVE = 17;
-        public static final int TURN = 18;
+        public static final int DRIVE = 18;
+        public static final int TURN = 17;
         public static final int ENCODER = 22;
         public static final double OFFSET = 323.877; //144.4043;
 
