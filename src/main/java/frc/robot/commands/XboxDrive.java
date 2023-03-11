@@ -149,7 +149,7 @@ public class XboxDrive extends CommandBase {
             return;
         }
 
-        System.out.println(driveSubsystem.getSwerveDrive().getAngle().getDegrees());
+        //System.out.println(driveSubsystem.getSwerveDrive().getAngle().getDegrees());
         
         if (Math.abs(getForward()) < 0.1 && Math.abs(getStrafe()) < 0.1) {
             driveSubsystem.getSwerveDrive().stop();
@@ -163,7 +163,7 @@ public class XboxDrive extends CommandBase {
 
         driveTranslation = driveTranslation.times(maxSpeed);
 
-        driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightX() * 13, false, Robot.isReal());
+        driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightX() * 13, true, Robot.isReal());
     }
 
     public void adjustBrakeModeBasedOnMode() {
