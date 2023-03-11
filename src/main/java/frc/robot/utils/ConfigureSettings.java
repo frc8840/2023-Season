@@ -38,7 +38,7 @@ public class ConfigureSettings {
             settings.angleOffsets = new double[] {0,0,0,0};
         }
 
-        settings.invertGyro = false;
+        settings.invertGyro = true;
 
         settings.canCoderInverted = true;
         settings.turnInverted = false;

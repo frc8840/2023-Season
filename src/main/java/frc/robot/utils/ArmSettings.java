@@ -13,7 +13,7 @@ public class ArmSettings {
     );
 
     public static class Base {
-        public static final int PORT = 0;
+        public static final int PORT = 31;
         public static final boolean INVERTED = false;
         public static final PIDStruct PID = new PIDStruct(0.0, 0.0, 0.0);
         

@@ -15,6 +15,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
+import frc.robot.utils.ControllerConstants;
 import frc.robot.utils.Measurements;
 import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.input.communication.CommunicationManager;
@@ -28,6 +29,12 @@ public class PS4Operator extends CommandBase {
         PLACE,
         PICKUP,
         NONE;
+    }
+
+    public enum ArmOperationMode {
+        OPEN_LOOP_MANUAL,
+        CLOSED_LOOP_MANUAL,
+        PRESET_POSITIONS;
     }
 
     private PS4Controller controller;
@@ -53,12 +60,14 @@ public class PS4Operator extends CommandBase {
 
     private OperateState state = OperateState.NONE;
 
+    private ArmOperationMode armOperationMode = ArmOperationMode.OPEN_LOOP_MANUAL;
+
     private String side = "blue";
 
     private double baseAngle = 0;
 
     public PS4Operator(GrabberSubsystem grabberSubsystem, ArmSubsystem armSubsystem) {
-        controller = new PS4Controller(0);//ControllerConstants.OPERATOR_PS4_CONTROLLER);
+        controller = new PS4Controller(ControllerConstants.OPERATOR_PS4_CONTROLLER);
 
         this.grabberSubsystem = grabberSubsystem;
         this.armSubsystem = armSubsystem;
@@ -246,13 +255,24 @@ public class PS4Operator extends CommandBase {
         } else if (controller.getPOV() < 0) {
             justMoved = false;
         }
-    
-        baseAngle += Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() * 0.0001 : 0;
-        SmartDashboard.putNumber("choose_angle", baseAngle);
+        
+        if (this.armOperationMode == ArmOperationMode.CLOSED_LOOP_MANUAL) {
+            baseAngle += Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() * 0.0001 : 0;
+            
+            if (baseAngle > 90) {
+                baseAngle = 90;
+            } else if (baseAngle < 0) {
+                baseAngle = 0;
+            }
+            
+            SmartDashboard.putNumber("choose_angle", baseAngle);
 
-        if (controller.getCircleButtonPressed()) {
-            SmartDashboard.putNumber("arm_angle", baseAngle);
-            armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
+            if (controller.getCircleButtonPressed() && baseAngle > 0 && baseAngle < 90) {
+                SmartDashboard.putNumber("arm_angle", baseAngle);
+                armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
+            }
+        } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
+            armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
         }
     }
 }

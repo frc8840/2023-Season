@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.ArmSettings;
 import frc.robot.utils.Measurements;
 import frc.team_8840_lib.controllers.specifics.SparkMaxEncoderWrapper;
+import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.utils.math.units.Cartesian2d;
@@ -85,6 +86,10 @@ public class ArmSubsystem extends SubsystemBase {
             baseEncoder = new SparkMaxEncoderWrapper(baseMotor);
             baseFeedforward = new ArmFeedforward(ArmSettings.Base.kS, ArmSettings.Base.kV, ArmSettings.Base.kG);
             basePID = baseMotor.getPIDController();
+
+            Logger.Log("[Arm] Initialized base motor.");
+        } else {
+            Logger.Log("[Arm] WARNING: Ignoring base motor.");
         }
 
         if (ARM_STATUS.elbow()) {
@@ -95,6 +100,10 @@ public class ArmSubsystem extends SubsystemBase {
             elbowPID = elbowMotor.getPIDController();
 
             elbowFeedforward = new ArmFeedforward(ArmSettings.Elbow.kS, ArmSettings.Elbow.kV, ArmSettings.Elbow.kG);
+
+            Logger.Log("[Arm] Initialized elbow motor.");
+        } else {
+            Logger.Log("[Arm] WARNING: Ignoring elbow motor.");
         }
 
         if (RobotBase.isSimulation()) {
@@ -172,9 +181,20 @@ public class ArmSubsystem extends SubsystemBase {
     private void configMotors() {
         if (ARM_STATUS.base()) {
             configureBaseMotor();
+            CommunicationManager.getInstance().updateInfo(
+                "arm",
+                "base_ready",
+                true
+            );
         }
         if (ARM_STATUS.elbow()) {
             configureElbowMotor();
+            Logger.Log("[Arm] Finished configuring arm motor.");
+            CommunicationManager.getInstance().updateInfo(
+                "arm",
+                "elbow_ready",
+                true
+            );
         }
     }
 
@@ -207,6 +227,22 @@ public class ArmSubsystem extends SubsystemBase {
             0,
             elbowFeedforward.calculate(elbowPosition, ArmSettings.Elbow.kVelocity)
         );
+    }
+
+    public void baseOpenLoop(double speed) {
+        if (Math.abs(speed) > 0.3) {
+            speed = Math.signum(speed) * 0.3;
+        }
+
+        baseMotor.set(speed);
+    }
+
+    public void elbowOpenLoop(double speed) {
+        if (Math.abs(speed) > 0.3) {
+            speed = Math.signum(speed) * 0.3;
+        }
+
+        elbowMotor.set(speed);
     }
 
     public void reportToNetworkTables() {
