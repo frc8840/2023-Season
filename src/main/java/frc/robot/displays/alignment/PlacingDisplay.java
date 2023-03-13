@@ -158,7 +158,32 @@ public class PlacingDisplay extends CanvasDisplay {
 
         CanvasSupplier fieldBottomY = n(greatestY * multValY);
 
-        CanvasSupplier robotX = nt_value("/SmartDashboard/Field/Robot[0]");
-        CanvasSupplier robotY = nt_value("/SmartDashboard/Field/Robot[1]");
+        //convert to inches
+        CanvasSupplier robotX = nt_value("/SmartDashboard/Field/SwerveRobot[0]").divide(n(0.0254));
+        CanvasSupplier robotY = nt_value("/SmartDashboard/Field/SwerveRobot[1]").divide(n(0.0254));
+
+        CanvasSupplier fieldTopY = fieldBottomY.subtract(
+            n(Measurements.Field.HEIGHT * multValY)
+        );
+
+        CanvasSupplier redSideLeftField = calc(
+            MAX(), Calculation.SUBTRACT,
+            n(Measurements.Field.WIDTH * multValX)
+        );
+
+        rect(
+            IfElse(
+                nt_value(getCustomBaseNTPath() + "Placing Display/side"), CanvasSupplier.IfOperation.EQUAL, s("red"), 
+                redSideLeftField.add(robotX.multiply(n(multValX))),
+                robotX.multiply(n(multValX))
+            ),
+            fieldTopY.add(
+                n(Measurements.Field.HEIGHT).subtract(robotY).multiply(n(multValY)) //due to the way Canvas works
+            ),
+            n(Units.metersToInches(Measurements.Robot.LENGTH) * multValX),
+            n(Units.metersToInches(Measurements.Robot.WIDTH) * multValY),
+            true
+        );
+        
     }
 }

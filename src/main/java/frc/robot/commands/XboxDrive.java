@@ -97,11 +97,11 @@ public class XboxDrive extends CommandBase {
     }
 
     public double getRightX() {
-        return Robot.isSimulation() ? Math.cos(simulatedController.getAxis(Axis.Rotation)) : controller.getRightX();
+        return Robot.isSimulation() ? 0 : controller.getRightX();
     }
 
     public double getRightY() {
-        return Robot.isSimulation() ? Math.sin(simulatedController.getAxis(Axis.Vertical)) : controller.getRightY();
+        return Robot.isSimulation() ? 0 : controller.getRightY();
     }
 
     @Override
@@ -149,10 +149,14 @@ public class XboxDrive extends CommandBase {
             return;
         }
 
-        //System.out.println(driveSubsystem.getSwerveDrive().getAngle().getDegrees());
+        if (driveSubsystem.isInAutoDrive()) return;
         
         if (Math.abs(getForward()) < 0.1 && Math.abs(getStrafe()) < 0.1) {
-            driveSubsystem.getSwerveDrive().stop();
+            if (Math.abs(getRightX()) < 0.1) {
+                driveSubsystem.getSwerveDrive().stop();
+            } else {
+                driveSubsystem.getSwerveDrive().spin(getRightX() * 13);
+            }
             return;
         }
 

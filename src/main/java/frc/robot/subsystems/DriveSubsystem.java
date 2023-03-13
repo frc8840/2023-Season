@@ -13,6 +13,16 @@ import frc.team_8840_lib.utils.controllers.swerve.SwerveSettings;
 public class DriveSubsystem extends SubsystemBase {
     private SwerveGroup swerveDrive;
 
+    private boolean inAutoDrive = false;
+
+    public boolean isInAutoDrive() {
+        return inAutoDrive;
+    }
+
+    public void setInAutoDrive(boolean inAutoDrive) {
+        this.inAutoDrive = inAutoDrive;
+    }
+
     /**
      * Creates a new DriveSubsystem.
      */

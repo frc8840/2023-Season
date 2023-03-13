@@ -1,17 +1,21 @@
 package frc.robot.commands;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import org.photonvision.EstimatedRobotPose;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -28,6 +32,7 @@ public class PS4Operator extends CommandBase {
         AUTO_ALIGN,
         PLACE,
         PICKUP,
+        ARM_OPERATE,
         NONE;
     }
 
@@ -128,7 +133,22 @@ public class PS4Operator extends CommandBase {
 
         new Trigger(controller::getTriangleButton).onTrue(
             Commands.runOnce(() -> {
-                calculateDistanceFromSelected();
+                if (this.state == OperateState.AUTO_ALIGN) {
+                    interruptedAutoAlign = true;
+                    DriveSubsystem drive = RobotContainer.getInstance().getDriveSubsystem();
+                    drive.getSwerveDrive().stop();
+                    drive.setInAutoDrive(false);
+                    state = OperateState.NONE;
+                    return;
+                }
+                
+                boolean success = calculateAndRunAutoAlign();
+                if (success) {
+                    Logger.Log("[AutoAlign]: Running auto align!");
+                    state = OperateState.AUTO_ALIGN;
+                } else {
+                    Logger.Log("[AutoAlign]: Failed to run auto align!");
+                }
             })
         );
 
@@ -154,7 +174,12 @@ public class PS4Operator extends CommandBase {
         );
     }
 
-    public boolean calculateDistanceFromSelected() {
+    private boolean interruptedAutoAlign = false;
+    
+    /*
+     * Unit standard: inches.
+     */
+    public boolean calculateAndRunAutoAlign() {
         RectangleBounds[] positions = Measurements.Grid.Rows.getBlueDimensionsList();
 
         int index = (selectedColumn * 3) + selectedRow;
@@ -169,8 +194,8 @@ public class PS4Operator extends CommandBase {
                 EstimatedRobotPose estPose = VisionSubsystem.getInstance().getEstimatedRobotPose();
                 
                 startAutoAlignPosition = new Translation2d(
-                    estPose.estimatedPose.getX(),
-                    estPose.estimatedPose.getY()
+                    Units.metersToInches(estPose.estimatedPose.getX()),
+                    Units.metersToInches(estPose.estimatedPose.getY())
                 );
             } else {
                 Logger.Log("[AutoAlign] No target found! Cannot calculate distance from target!");
@@ -178,35 +203,103 @@ public class PS4Operator extends CommandBase {
             }
         } else {
             //Get closest 
-            Pose2d robotPose = RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().getPose();
+            Pose2d rawRobotPose = RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().getPose();
+
+            //Adjust to canvas coordinates due to y being flipped
+            Pose2d robotPose = new Pose2d(
+                new Translation2d(
+                    rawRobotPose.getX(), 
+                    Units.inchesToMeters(Measurements.Field.HEIGHT) - rawRobotPose.getY()
+                ),
+                rawRobotPose.getRotation()
+            );
 
             //Find the closest measurement to the robot
             int closestIndex = -1;
             double closestDistance = Double.MAX_VALUE;
 
+            int i = 0;
             for (RectangleBounds rb : positions) {
                 double distance = MathUtils.distance(
-                    robotPose.getX(),
-                    robotPose.getY(),
-                    rb.getCenterX(),
+                    Units.metersToInches(robotPose.getX()),
+                    Units.metersToInches(robotPose.getY()),
+                    Measurements.Field.WIDTH - rb.getCenterX(),
                     rb.getCenterY()
                 );
 
                 if (distance < closestDistance) {
                     closestDistance = distance;
-                    closestIndex = (int) rb.getCenterX();
+                    closestIndex = i;
                 }
+
+                i++;
             }
 
             if (closestIndex == -1) return false;
 
-            double closestY = positions[closestIndex].getCenterY();
-
-            Logger.Log("Closest Y: " + closestY + " index: " + closestIndex);
+            startAutoAlignPosition = new Translation2d(
+                Units.metersToInches(robotPose.getX()),
+                Units.metersToInches(robotPose.getY())
+            );
 
             SmartDashboard.putNumber("close", closestIndex);
         }
 
+        double yDistance = Math.abs(startAutoAlignPosition.getY() - y);
+        double xDistance = Math.abs(
+            startAutoAlignPosition.getX() - 
+            (isLeftSide ? 
+                Measurements.Grid.DEPTH + Units.metersToInches(0.5) : 
+                Measurements.Field.WIDTH - Measurements.Grid.DEPTH - Units.metersToInches(0.5)
+            )
+        );
+
+        if (xDistance > 12 && !Robot.isSimulation()) { //more than a foot away
+            Logger.Log("[AutoAlign] Too far from the grid, cannot auto align! (XDistance: " + xDistance + "ft)");
+            return false;
+        }
+
+        boolean goingDown = startAutoAlignPosition.getY() < y;
+
+        final double maxAutoAlignSpeed = 3; //m/s
+
+        double timeToReach = Units.inchesToMeters(yDistance) / maxAutoAlignSpeed;
+
+        DriveSubsystem drive = RobotContainer.getInstance().getDriveSubsystem();
+
+        drive.setInAutoDrive(true);
+
+        drive.getSwerveDrive().drive(
+            new Translation2d(
+                0,
+                (isLeftSide ? 1 : -1) * (goingDown ? -maxAutoAlignSpeed : maxAutoAlignSpeed)
+            ),
+            0,
+            true,
+            Robot.isReal()
+        );
+
+        Logger.Log("[AutoAlign] Starting auto align: moving " + (goingDown ? "down" : "up") + " at 3m/s for " + timeToReach + " seconds.");
+
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (interruptedAutoAlign) {
+                    interruptedAutoAlign = false;
+                    return;
+                }
+                RobotContainer.getInstance().getDriveSubsystem().setInAutoDrive(false);
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().stop();
+                
+                state = OperateState.NONE;
+
+                Logger.Log("[AutoAlign] Finished auto align!");
+            }
+        };
+
+        Timer timer = new Timer();
+        timer.schedule(task, (long) (timeToReach * 1000));
+    
         return true;
     }
 
@@ -219,12 +312,6 @@ public class PS4Operator extends CommandBase {
 
     @Override
     public void execute() {
-        //etc
-
-        if (this.state == OperateState.AUTO_ALIGN) {
-            
-        }
-
         //Auto Align Chooser
         if (!justMoved && controller.getPOV() >= 0) {
             justMoved = true;
@@ -256,23 +343,29 @@ public class PS4Operator extends CommandBase {
             justMoved = false;
         }
         
-        if (this.armOperationMode == ArmOperationMode.CLOSED_LOOP_MANUAL) {
-            baseAngle += Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() * 0.0001 : 0;
-            
-            if (baseAngle > 90) {
-                baseAngle = 90;
-            } else if (baseAngle < 0) {
-                baseAngle = 0;
+        if (this.state == OperateState.AUTO_ALIGN) {
+            if (controller.getCircleButtonPressed()) {
+                
             }
-            
-            SmartDashboard.putNumber("choose_angle", baseAngle);
+        } else if (this.state == OperateState.ARM_OPERATE) {
+            if (this.armOperationMode == ArmOperationMode.CLOSED_LOOP_MANUAL) {
+                baseAngle += Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() * 0.0001 : 0;
+                
+                if (baseAngle > 90) {
+                    baseAngle = 90;
+                } else if (baseAngle < 0) {
+                    baseAngle = 0;
+                }
+                
+                SmartDashboard.putNumber("choose_angle", baseAngle);
 
-            if (controller.getCircleButtonPressed() && baseAngle > 0 && baseAngle < 90) {
-                SmartDashboard.putNumber("arm_angle", baseAngle);
-                armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
+                if (controller.getCircleButtonPressed() && baseAngle > 0 && baseAngle < 90) {
+                    SmartDashboard.putNumber("arm_angle", baseAngle);
+                    armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
+                }
+            } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
+                armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
             }
-        } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
-            armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
         }
     }
 }

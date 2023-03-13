@@ -34,7 +34,11 @@ public class BACHDisplay extends CanvasDisplay {
             true
         );
 
-        CanvasSupplier angle = nt_value("/SmartDashboard/arm_angle").divide(n(180)).multiply(n(Math.PI));
+        CanvasSupplier angle = calc(
+            n(360),
+            Calculation.SUBTRACT,
+            nt_value("/SmartDashboard/arm_angle")
+        ).divide(n(180)).multiply(n(Math.PI));
 
         CanvasSupplier angleX = angle.cos().multiply(n(75)).add(MAX().divide(n(2)));
         CanvasSupplier angleY = angle.sin().multiply(n(75)).add(MAX().divide(n(2)));

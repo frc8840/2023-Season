@@ -44,6 +44,49 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
+    public static enum ArmState {
+        RESTING(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        ),
+        INTAKE_FLOOR(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        ),
+        INTAKE_SUBSTATION(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        ),
+        PLACING_HYBRID(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        ),
+        PLACING_MIDDLE_CONE(
+            Rotation2d.fromDegrees(0),
+            Rotation2d.fromDegrees(0)
+        ),
+        PLACING_MIDDLE_CUBE(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        ),
+        PLACING_UPPER_CONE(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        ),
+        PLACING_UPPER_CUBE(
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
+        );
+
+        private Rotation2d baseAngle;
+        private Rotation2d elbowAngle;
+
+        private ArmState(Rotation2d baseAngle, Rotation2d elbowAngle) {
+            this.baseAngle = baseAngle;
+            this.elbowAngle = elbowAngle;
+        }
+    }
+
     public static Translation2d[] SIDE_VIEW_ROBOT = new Translation2d[] {
         //Front corners
         new Translation2d(-Measurements.Robot.LENGTH / 2, 0),
@@ -52,7 +95,6 @@ public class ArmSubsystem extends SubsystemBase {
         //Back corners
         new Translation2d(Measurements.Robot.LENGTH / 2, 0),
         new Translation2d(Measurements.Robot.LENGTH / 2, Measurements.Robot.BASE_HEIGHT)
-        
     };
 
     public static final ArmStatus ARM_STATUS = RobotBase.isSimulation() ? ArmStatus.BOTH : ArmStatus.BASE;
@@ -173,6 +215,10 @@ public class ArmSubsystem extends SubsystemBase {
         elbowPID.setD(ArmSettings.Elbow.PID.kD);
         elbowPID.setFF(ArmSettings.Elbow.PID.kF);
         elbowPID.setIZone(ArmSettings.Elbow.PID.kIZone);
+
+        elbowPID.setOutputRange(-0.3, 0.3); //TODO: edit
+
+        elbowPID.setFeedbackDevice(elbowEncoder.getEncoder());
 
         //Burn to flash
         elbowMotor.burnFlash();
