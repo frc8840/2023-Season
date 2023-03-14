@@ -249,6 +249,11 @@ public class ArmSubsystem extends SubsystemBase {
         setElbowPosition(elbowPosition);
     }
 
+    public void setPosition(ArmState state) {
+        setBasePosition(state.baseAngle);
+        setElbowPosition(state.elbowAngle);
+    }
+
     public void setBasePosition(Rotation2d basePositionRot) {
         double basePosition = basePositionRot.getDegrees();
 

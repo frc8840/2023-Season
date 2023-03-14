@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -57,7 +58,13 @@ public class XboxDrive extends CommandBase {
 
         if (Robot.isReal()) {
             //Add Triggers to Controllers
-            xModeTrigger = new Trigger(controller::getXButton).onTrue(
+            xModeTrigger = new Trigger(controller::getLeftStickButton).onTrue(
+                Commands.runOnce(() -> {
+                    if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
+                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
+                    adjustBrakeModeBasedOnMode();
+                })
+            ).onFalse(
                 Commands.runOnce(() -> {
                     if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;

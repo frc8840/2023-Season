@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
+import frc.robot.subsystems.arm.ArmSubsystem.ArmState;
 import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.ControllerConstants;
@@ -30,9 +32,6 @@ import frc.team_8840_lib.utils.math.units.RectangleBounds;
 public class PS4Operator extends CommandBase {
     public enum OperateState {
         AUTO_ALIGN,
-        PLACE,
-        PICKUP,
-        ARM_OPERATE,
         NONE;
     }
 
@@ -42,6 +41,29 @@ public class PS4Operator extends CommandBase {
         PRESET_POSITIONS;
     }
 
+    public enum ArmLocation {
+        IN_POSITION,
+        RESTING;
+    }
+
+    /**
+     * -- Controls: --
+     * 
+     * Square: Cube Intake
+     * Circle: (Arm Operate, Manual Closed Loop): Move arm to position 
+     * Triangle: Auto Align
+     * Cross: Cone Intake
+     * 
+     * Arrows: 
+     * 
+     * L1: Select Position
+     * L2: Change Side (display + operations)
+     * R1: Move arm to pre-set position.
+     * R2:
+     * 
+     * L3:
+     * R3:
+     */
     private PS4Controller controller;
 
     private Trigger coneTrigger;
@@ -66,6 +88,7 @@ public class PS4Operator extends CommandBase {
     private OperateState state = OperateState.NONE;
 
     private ArmOperationMode armOperationMode = ArmOperationMode.CLOSED_LOOP_MANUAL;
+    private ArmLocation armLocation = ArmLocation.RESTING;
 
     private String side = "blue";
 
@@ -347,7 +370,7 @@ public class PS4Operator extends CommandBase {
             if (controller.getCircleButtonPressed()) {
                 
             }
-        } else if (this.state == OperateState.ARM_OPERATE) {
+        } else {
             if (this.armOperationMode == ArmOperationMode.CLOSED_LOOP_MANUAL) {
                 baseAngle += Math.abs(controller.getLeftY()) > 0.1 ? controller.getLeftY() * 0.0001 : 0;
                 
@@ -365,6 +388,58 @@ public class PS4Operator extends CommandBase {
                 }
             } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
                 armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
+            } else if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
+                final int[] poleGrids = new int[] {
+                    0, 2, 3, 5, 6, 8
+                };
+
+                if (controller.getR1ButtonPressed()) {
+                    String operationName = "none";
+
+                    if (armLocation == ArmLocation.RESTING) {
+                        if (Arrays.binarySearch(poleGrids, selectedRow) >= 0) {
+                            switch (selectedColumn) {
+                                case 0:
+                                    armSubsystem.setPosition(ArmState.PLACING_UPPER_CONE);
+                                    operationName = "upper_cone";
+                                    break;
+                                case 1:
+                                    armSubsystem.setPosition(ArmState.PLACING_MIDDLE_CONE);
+                                    operationName = "middle_cone";
+                                    break;
+                                default:
+                                    armSubsystem.setPosition(ArmState.PLACING_HYBRID);
+                                    operationName = "hybrid";
+                                    break;
+                            }
+                        } else {
+                            switch (selectedColumn) {
+                                case 0:
+                                    armSubsystem.setPosition(ArmState.PLACING_UPPER_CUBE);
+                                    operationName = "upper_cube";
+                                    break;
+                                case 1:
+                                    armSubsystem.setPosition(ArmState.PLACING_MIDDLE_CUBE);
+                                    operationName = "middle_cube";
+                                    break;
+                                default:
+                                    armSubsystem.setPosition(ArmState.PLACING_HYBRID);
+                                    operationName = "hybrid";
+                                    break;
+                            }
+                        }
+
+                        armLocation = ArmLocation.IN_POSITION;
+                    } else if (armLocation == ArmLocation.IN_POSITION) {
+                        armSubsystem.setPosition(ArmState.RESTING);
+                        operationName = "resting";
+
+                        armLocation = ArmLocation.RESTING;
+                    }
+
+                    Logger.Log("[Arm] Moved arm into position of " + operationName);
+                    CommunicationManager.getInstance().updateInfo("arm", "position_name", operationName);
+                }
             }
         }
     }
