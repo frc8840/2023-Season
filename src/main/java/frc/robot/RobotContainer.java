@@ -26,7 +26,7 @@ public class RobotContainer {
         instance = this;
 
         driveSubsystem = new DriveSubsystem();
-        //visionSubsystem = new VisionSubsystem();
+        visionSubsystem = new VisionSubsystem();
         armSubsystem = new ArmSubsystem();
         grabberSubsystem = new GrabberSubsystem();
 
