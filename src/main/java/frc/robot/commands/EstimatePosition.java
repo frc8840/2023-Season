@@ -31,7 +31,14 @@ public class EstimatePosition extends CommandBase {
 
     @Override
     public void execute() {
-        EstimatedRobotPose estimatedRobotPose = visionSubsystem.getEstimatedRobotPose();
+        EstimatedRobotPose estimatedRobotPose;
+
+        try {
+            estimatedRobotPose = visionSubsystem.getEstimatedRobotPose();
+        } catch (Exception e) {
+            return;
+        }
+        
         boolean hasTarget = visionSubsystem.hasTarget();
 
         if (hasTarget) {
