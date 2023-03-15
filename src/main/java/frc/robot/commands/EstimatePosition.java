@@ -47,17 +47,19 @@ public class EstimatePosition extends CommandBase {
             //         .updateInfo("apriltags", "tag" + id + "/z", transform.getTranslation().getZ());
             // }
 
-            if (CommunicationManager.getInstance().fieldExists()) {
-                CommunicationManager.getInstance().updateFieldObjectPose("EstPose", 
-                    new Pose2d(
-                        new Translation2d(
-                            estimatedRobotPose.estimatedPose.getX(),
-                            estimatedRobotPose.estimatedPose.getY()
-                        ),
-                        estimatedRobotPose.estimatedPose.getRotation().toRotation2d()
-                    )
-                );
-            }
+            try {
+                if (CommunicationManager.getInstance().fieldExists()) {
+                    CommunicationManager.getInstance().updateFieldObjectPose("EstPose", 
+                        new Pose2d(
+                            new Translation2d(
+                                estimatedRobotPose.estimatedPose.getX(),
+                                estimatedRobotPose.estimatedPose.getY()
+                            ),
+                            estimatedRobotPose.estimatedPose.getRotation().toRotation2d()
+                        )
+                    );
+                }
+            } catch (Exception e) { }
         } else if (CommunicationManager.getInstance().fieldExists()) {
             CommunicationManager.getInstance().updateFieldObjectPose("EstPose", 
                     new Pose2d(

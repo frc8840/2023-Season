@@ -145,6 +145,7 @@ public class XboxDrive extends CommandBase {
         if (controller.getXButtonPressed()) {
             driveSubsystem.getSwerveDrive().resetToAbsolute();
             Logger.Log("[Swerve] RESET TO ABSOLUTE!");
+            return;
         }
 
         if (driveMode == DriveMode.SPINNY_BOI) {
