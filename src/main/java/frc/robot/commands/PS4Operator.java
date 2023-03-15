@@ -30,6 +30,8 @@ import frc.team_8840_lib.utils.math.MathUtils;
 import frc.team_8840_lib.utils.math.units.RectangleBounds;
 
 public class PS4Operator extends CommandBase {
+    public static final boolean runAutoAlign = false;
+    
     public enum OperateState {
         AUTO_ALIGN,
         NONE;
@@ -156,6 +158,8 @@ public class PS4Operator extends CommandBase {
 
         new Trigger(controller::getTriangleButton).onTrue(
             Commands.runOnce(() -> {
+                if (!runAutoAlign) return;
+
                 if (this.state == OperateState.AUTO_ALIGN) {
                     interruptedAutoAlign = true;
                     DriveSubsystem drive = RobotContainer.getInstance().getDriveSubsystem();

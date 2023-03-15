@@ -33,6 +33,21 @@ public class XboxDrive extends CommandBase {
 
     private final static double maxSpeed = 3;
 
+    /**
+     * Buttons:
+     * 
+     * A: Spin
+     * B: Zero out
+     * X: Reset to Absolute
+     * Y: Testing
+     * 
+     * Left Bumper: 
+     * Right Bumper: X Mode (while hold)
+     * 
+     * Left Joystick Button:
+     * Right Joystick Button: 
+     * 
+     */
     private XboxController controller;
     private SimulatedController simulatedController;
 
@@ -57,8 +72,10 @@ public class XboxDrive extends CommandBase {
         addRequirements(driveSubsystem);
 
         if (Robot.isReal()) {
+            driveSubsystem.getSwerveDrive().setGyroStartOffset(Rotation2d.fromDegrees(180));
+
             //Add Triggers to Controllers
-            xModeTrigger = new Trigger(controller::getLeftStickButton).onTrue(
+            xModeTrigger = new Trigger(controller::getRightBumper).onTrue(
                 Commands.runOnce(() -> {
                     if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
@@ -124,6 +141,11 @@ public class XboxDrive extends CommandBase {
         if (GamePhase.getCurrentPhase() != GamePhase.Teleop) return;
         
         SmartDashboard.putString("Drive Mode", driveMode.name());
+
+        if (controller.getXButtonPressed()) {
+            driveSubsystem.getSwerveDrive().resetToAbsolute();
+            Logger.Log("[Swerve] RESET TO ABSOLUTE!");
+        }
 
         if (driveMode == DriveMode.SPINNY_BOI) {
             driveSubsystem.getSwerveDrive().spin(controller.getRightX() * 18);
