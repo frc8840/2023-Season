@@ -50,32 +50,32 @@ public class ArmSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(0)
         ),
         INTAKE_FLOOR(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(129), 
+            Rotation2d.fromDegrees(-5)
         ),
         INTAKE_SUBSTATION(
             Rotation2d.fromDegrees(0), 
             Rotation2d.fromDegrees(0)
         ),
         PLACING_HYBRID(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(129), 
+            Rotation2d.fromDegrees(-5)
         ),
         PLACING_MIDDLE_CONE(
-            Rotation2d.fromDegrees(0),
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(93),
+            Rotation2d.fromDegrees(-16)
         ),
         PLACING_MIDDLE_CUBE(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(79), 
+            Rotation2d.fromDegrees(-9)
         ),
         PLACING_UPPER_CONE(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(137.1), 
+            Rotation2d.fromDegrees(-39.6)
         ),
         PLACING_UPPER_CUBE(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(121), 
+            Rotation2d.fromDegrees(-25)
         );
 
         private Rotation2d baseAngle;
@@ -97,10 +97,10 @@ public class ArmSubsystem extends SubsystemBase {
         new Translation2d(Measurements.Robot.LENGTH / 2, Measurements.Robot.BASE_HEIGHT)
     };
 
-    public static final ArmStatus ARM_STATUS = RobotBase.isSimulation() ? ArmStatus.BOTH : ArmStatus.BASE;
+    public static final ArmStatus ARM_STATUS = ArmStatus.BOTH;
 
-    private static final double MAX_BASE_SPEED = 0.6;
-    private static final double MAX_ELBOW_SPEED = 0.6;
+    private static final double MAX_BASE_SPEED = 0.7;
+    private static final double MAX_ELBOW_SPEED = 0.7;
 
     private static ArmSubsystem instance;
 
@@ -257,7 +257,18 @@ public class ArmSubsystem extends SubsystemBase {
         setElbowPosition(state.elbowAngle);
     }
 
+    public void stop() {
+        if (ARM_STATUS.base()) {
+            baseMotor.set(0);
+        }
+        if (ARM_STATUS.elbow()) {
+            elbowMotor.set(0);
+        }
+    }
+
     public void setBasePosition(Rotation2d basePositionRot) {
+        if (!ARM_STATUS.base()) return;
+
         double basePosition = basePositionRot.getDegrees();
 
         baseAngleCache = basePosition;
@@ -271,6 +282,8 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void setElbowPosition(Rotation2d elbowPositionRot) {
+        if (!ARM_STATUS.elbow()) return;
+
         double elbowPosition = elbowPositionRot.getDegrees();
 
         elbowAngleCache = elbowPosition;

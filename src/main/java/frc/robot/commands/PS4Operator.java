@@ -61,7 +61,7 @@ public class PS4Operator extends CommandBase {
      * L1: Select Position
      * L2: Change Side (display + operations)
      * R1: Move arm to pre-set position.
-     * R2:
+     * R2: STOP ARM
      * 
      * L3:
      * R3:
@@ -369,6 +369,13 @@ public class PS4Operator extends CommandBase {
         } else if (controller.getPOV() < 0) {
             justMoved = false;
         }
+
+        if (controller.getR2Button()) {
+            armSubsystem.baseOpenLoop(0);
+            armSubsystem.elbowOpenLoop(0);
+            armSubsystem.stop();
+            return;
+        }
         
         if (this.state == OperateState.AUTO_ALIGN) {
             if (controller.getCircleButtonPressed()) {
@@ -392,7 +399,7 @@ public class PS4Operator extends CommandBase {
                 }
             } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
                 if (Math.abs(controller.getLeftY()) > 0.1) {
-                    armSubsystem.baseOpenLoop(controller.getLeftY() * 0.6);
+                    armSubsystem.baseOpenLoop(-controller.getLeftY() * 0.6);
                 } else {
                     armSubsystem.baseOpenLoop(0);
                 }
