@@ -35,7 +35,7 @@ public class ArmSettings {
     public static class Elbow {
         public static final int PORT = 32;
         public static final boolean INVERTED = false;
-        public static final PIDStruct PID = new PIDStruct(0.0, 0.0, 0.0);
+        public static final PIDStruct PID = new PIDStruct(0.025, 0.0, 0.0);
 
         public static final double kS = 0.0;
         public static final double kV = 0.0;
