@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import com.revrobotics.REVPhysicsSim;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -106,7 +107,7 @@ public class ChargedUpRobot extends EventListener {
 
                 pose = new Pose2d( 
                     Units.inchesToMeters(Measurements.Field.WIDTH) - pose.getX(), 
-                    pose.getY(), pose.getRotation()
+                    pose.getY(), Rotation2d.fromDegrees(0)
                 );
                 // Pose2d lastPose = PathPlanner.getSelectedAuto().current().getPath().getLastPose();
 

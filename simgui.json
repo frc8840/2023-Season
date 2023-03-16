@@ -214,6 +214,7 @@
           },
           "open": true
         },
+        "open": true,
         "simcontrols": {
           "joystick": {
             "open": true
@@ -232,8 +233,7 @@
       "LiveWindow": {
         ".status": {
           "open": true
-        },
-        "open": true
+        }
       },
       "Shuffleboard": {
         ".metadata": {

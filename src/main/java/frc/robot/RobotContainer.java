@@ -34,10 +34,6 @@ public class RobotContainer {
             new XboxDrive(driveSubsystem)
         );
 
-        visionSubsystem.setDefaultCommand(
-            new EstimatePosition(visionSubsystem)
-        );
-
         PS4Operator operator = new PS4Operator(grabberSubsystem, armSubsystem);
 
         // grabberSubsystem.setDefaultCommand(

@@ -391,7 +391,8 @@ public class PS4Operator extends CommandBase {
                     armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
                 }
             } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
-                armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
+                if (Math.abs(controller.getLeftY()) > 0.1) armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
+                if (Math.abs(controller.getRightY()) > 0.1) armSubsystem.elbowOpenLoop(controller.getRightY() * 0.13);
             } else if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
                 final int[] poleGrids = new int[] {
                     0, 2, 3, 5, 6, 8

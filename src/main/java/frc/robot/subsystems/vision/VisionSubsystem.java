@@ -14,10 +14,14 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.VisionSettings;
 import frc.team_8840_lib.info.console.Logger;
+import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.listeners.Robot;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -86,6 +90,33 @@ public class VisionSubsystem extends SubsystemBase {
             } catch (Exception e) {
                 //return;
             }
+        }
+
+        if (hasTarget) {
+            try {
+                if (CommunicationManager.getInstance().fieldExists()) {
+                    CommunicationManager.getInstance().updateFieldObjectPose("EstPose", 
+                        new Pose2d(
+                            new Translation2d(
+                                estimatedRobotPose.estimatedPose.getX(),
+                                estimatedRobotPose.estimatedPose.getY()
+                            ),
+                            estimatedRobotPose.estimatedPose.getRotation().toRotation2d()
+                        )
+                    );
+
+                }
+            } catch (Exception e) { }
+        } else if (CommunicationManager.getInstance().fieldExists()) {
+            CommunicationManager.getInstance().updateFieldObjectPose("EstPose", 
+                    new Pose2d(
+                    new Translation2d(
+                        0,
+                        0
+                    ),
+                    Rotation2d.fromDegrees(0)
+                )
+            );
         }
 
         this.hasTarget = hasTarget;

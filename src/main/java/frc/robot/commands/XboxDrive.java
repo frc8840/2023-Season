@@ -32,6 +32,7 @@ public class XboxDrive extends CommandBase {
     }
 
     private final static double maxSpeed = 3;
+    private final static double slowModeSpeed = 1;
 
     /**
      * Buttons:
@@ -41,7 +42,7 @@ public class XboxDrive extends CommandBase {
      * X: Reset to Absolute
      * Y: Testing
      * 
-     * Left Bumper: 
+     * Left Bumper: Slow Mode (while hold)
      * Right Bumper: X Mode (while hold)
      * 
      * Left Joystick Button:
@@ -54,13 +55,13 @@ public class XboxDrive extends CommandBase {
     private DriveSubsystem driveSubsystem;
 
     private DriveMode driveMode = DriveMode.NORMAL;
+    private boolean inSlowMode = false;
 
-    private Trigger xModeTrigger; //Binded to cross button
-    private Trigger zeroModeTrigger; //Binded to square button
-    private Trigger spinnyBoiTrigger; //Binded to circle button
-    private Trigger testTrigger;
-
-    private double rotation = 0;
+    private Trigger xModeTrigger; //Binded to right bumper
+    private Trigger zeroModeTrigger; //Binded to B button
+    private Trigger spinnyBoiTrigger; //Binded to A button
+    private Trigger testTrigger; //Binded to Y button
+    private Trigger slowModeTrigger; //Binded to left bumper
 
     public XboxDrive(DriveSubsystem driveSubsystem) {
         //Setup Controllers
@@ -86,6 +87,16 @@ public class XboxDrive extends CommandBase {
                     if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
                     adjustBrakeModeBasedOnMode();
+                })
+            );
+
+            slowModeTrigger = new Trigger(controller::getLeftBumper).onTrue(
+                Commands.runOnce(() -> {
+                    inSlowMode = true;
+                })
+            ).onFalse(
+                Commands.runOnce(() -> {
+                    inSlowMode = false;
                 })
             );
 
@@ -195,7 +206,7 @@ public class XboxDrive extends CommandBase {
             getStrafe()
         );
 
-        driveTranslation = driveTranslation.times(maxSpeed);
+        driveTranslation = driveTranslation.times(inSlowMode ? slowModeSpeed : maxSpeed);
 
         driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightX() * 13, true, Robot.isReal());
     }

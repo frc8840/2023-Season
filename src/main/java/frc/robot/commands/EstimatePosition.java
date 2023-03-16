@@ -38,7 +38,7 @@ public class EstimatePosition extends CommandBase {
         } catch (Exception e) {
             return;
         }
-        
+
         boolean hasTarget = visionSubsystem.hasTarget();
 
         if (hasTarget) {
@@ -65,6 +65,7 @@ public class EstimatePosition extends CommandBase {
                             estimatedRobotPose.estimatedPose.getRotation().toRotation2d()
                         )
                     );
+
                 }
             } catch (Exception e) { }
         } else if (CommunicationManager.getInstance().fieldExists()) {
