@@ -33,7 +33,7 @@ public class ArmSettings {
     }
 
     public static class Elbow {
-        public static final int PORT = 1;
+        public static final int PORT = 32;
         public static final boolean INVERTED = false;
         public static final PIDStruct PID = new PIDStruct(0.0, 0.0, 0.0);
 
@@ -48,6 +48,6 @@ public class ArmSettings {
     }
 
     public static class Grabber {
-        public static final int PORT = 2;
+        public static final int PORT = 33;
     }
 }

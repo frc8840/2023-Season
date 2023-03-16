@@ -48,14 +48,14 @@ public class GrabberSubsystem extends SubsystemBase {
     public GrabberSubsystem() {
         instance = this;
 
-        // state = GrabberState.OPEN;
-        // direction = GrabberDirection.IN;
-        // loadedPiece = LoadedPiece.NONE;
+        state = GrabberState.OPEN;
+        direction = GrabberDirection.IN;
+        loadedPiece = LoadedPiece.NONE;
 
-        // grabberMotor = new CANSparkMax(ArmSettings.Grabber.PORT, MotorType.kBrushless);
-        // grabberEncoder = new SparkMaxEncoderWrapper(grabberMotor);
+        grabberMotor = new CANSparkMax(ArmSettings.Grabber.PORT, MotorType.kBrushless);
+        grabberEncoder = new SparkMaxEncoderWrapper(grabberMotor);
 
-        // this.setupController();
+        this.setupController();
     }
 
     public void setupController() {
@@ -131,18 +131,18 @@ public class GrabberSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // if (coneHoldStrat == ConeHoldStrat.SLOW_BACKWARDS && loadedPiece == LoadedPiece.CONE && state == GrabberState.CLOSED) {
-        //     grabberMotor.set(0.02); //TODO: TUNE
-        // }
+        if (coneHoldStrat == ConeHoldStrat.SLOW_BACKWARDS && loadedPiece == LoadedPiece.CONE && state == GrabberState.CLOSED) {
+            grabberMotor.set(0.02); //TODO: TUNE
+        }
 
-        // if (state == GrabberState.ACTIVE) {
-        //     if (direction == GrabberDirection.IN) {
-        //         grabberMotor.set(0.5); //TODO: TUNE
-        //     } else {
-        //         grabberMotor.set(-0.5); //TODO: TUNE
-        //     }
-        // } else {
-        //     grabberMotor.set(0);
-        // }
+        if (state == GrabberState.ACTIVE) {
+            if (direction == GrabberDirection.IN) {
+                grabberMotor.set(0.5); //TODO: TUNE
+            } else {
+                grabberMotor.set(-0.5); //TODO: TUNE
+            }
+        } else {
+            grabberMotor.set(0);
+        }
     }
 }

@@ -89,7 +89,7 @@ public class PS4Operator extends CommandBase {
 
     private OperateState state = OperateState.NONE;
 
-    private ArmOperationMode armOperationMode = ArmOperationMode.CLOSED_LOOP_MANUAL;
+    private ArmOperationMode armOperationMode = ArmOperationMode.OPEN_LOOP_MANUAL;
     private ArmLocation armLocation = ArmLocation.RESTING;
 
     private String side = "blue";
@@ -391,8 +391,17 @@ public class PS4Operator extends CommandBase {
                     armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
                 }
             } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
-                if (Math.abs(controller.getLeftY()) > 0.1) armSubsystem.baseOpenLoop(controller.getLeftY() * 0.13);
-                if (Math.abs(controller.getRightY()) > 0.1) armSubsystem.elbowOpenLoop(controller.getRightY() * 0.13);
+                if (Math.abs(controller.getLeftY()) > 0.1) {
+                    armSubsystem.baseOpenLoop(controller.getLeftY() * 0.6);
+                } else {
+                    armSubsystem.baseOpenLoop(0);
+                }
+
+                if (Math.abs(controller.getRightY()) > 0.1) {
+                    armSubsystem.elbowOpenLoop(controller.getRightY() * 0.6);
+                } else {
+                    armSubsystem.elbowOpenLoop(0);
+                }
             } else if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
                 final int[] poleGrids = new int[] {
                     0, 2, 3, 5, 6, 8

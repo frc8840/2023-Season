@@ -36,9 +36,9 @@ public class RobotContainer {
 
         PS4Operator operator = new PS4Operator(grabberSubsystem, armSubsystem);
 
-        // grabberSubsystem.setDefaultCommand(
-        //     operator
-        // );
+        grabberSubsystem.setDefaultCommand(
+            operator
+        );
 
         armSubsystem.setDefaultCommand(
             operator

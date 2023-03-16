@@ -99,6 +99,9 @@ public class ArmSubsystem extends SubsystemBase {
 
     public static final ArmStatus ARM_STATUS = RobotBase.isSimulation() ? ArmStatus.BOTH : ArmStatus.BASE;
 
+    private static final double MAX_BASE_SPEED = 0.6;
+    private static final double MAX_ELBOW_SPEED = 0.6;
+
     private static ArmSubsystem instance;
 
     public static ArmSubsystem getInstance() {
@@ -188,7 +191,7 @@ public class ArmSubsystem extends SubsystemBase {
         basePID.setFF(ArmSettings.Base.PID.kF);
         basePID.setIZone(ArmSettings.Base.PID.kIZone);
 
-        basePID.setOutputRange(-0.3, 0.3);
+        basePID.setOutputRange(-MAX_BASE_SPEED, MAX_BASE_SPEED);
 
         basePID.setFeedbackDevice(baseEncoder.getEncoder());
 
@@ -216,7 +219,7 @@ public class ArmSubsystem extends SubsystemBase {
         elbowPID.setFF(ArmSettings.Elbow.PID.kF);
         elbowPID.setIZone(ArmSettings.Elbow.PID.kIZone);
 
-        elbowPID.setOutputRange(-0.3, 0.3); //TODO: edit
+        elbowPID.setOutputRange(-MAX_ELBOW_SPEED, MAX_ELBOW_SPEED); //TODO: edit
 
         elbowPID.setFeedbackDevice(elbowEncoder.getEncoder());
 
@@ -281,16 +284,20 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void baseOpenLoop(double speed) {
-        if (Math.abs(speed) > 0.3) {
-            speed = Math.signum(speed) * 0.3;
+        if (!ARM_STATUS.base()) return;
+
+        if (Math.abs(speed) > MAX_BASE_SPEED) {
+            speed = Math.signum(speed) * MAX_BASE_SPEED;
         }
 
         baseMotor.set(speed);
     }
 
     public void elbowOpenLoop(double speed) {
-        if (Math.abs(speed) > 0.3) {
-            speed = Math.signum(speed) * 0.3;
+        if (!ARM_STATUS.elbow()) return;
+
+        if (Math.abs(speed) > MAX_ELBOW_SPEED) {
+            speed = Math.signum(speed) * MAX_ELBOW_SPEED;
         }
 
         elbowMotor.set(speed);
