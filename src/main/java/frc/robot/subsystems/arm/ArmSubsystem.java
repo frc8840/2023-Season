@@ -210,7 +210,17 @@ public class ArmSubsystem extends SubsystemBase {
         elbowMotor.setSecondaryCurrentLimit(30);
         elbowMotor.enableVoltageCompensation(12);
         
-        elbowEncoder.setPositionConversionFactor(ArmSettings.Elbow.GEAR_RATIO);
+        double positionConversionFactor = (1 / ArmSettings.Base.GEAR_RATIO) * 360;
+        
+        elbowEncoder.setPositionConversionFactor(
+            positionConversionFactor
+        );
+
+        double velocityConversionFactor = positionConversionFactor / 60;
+
+        elbowEncoder.setVelocityConversionFactor(
+            velocityConversionFactor
+        );
 
         //Set elbow PID
         elbowPID.setP(ArmSettings.Elbow.PID.kP);

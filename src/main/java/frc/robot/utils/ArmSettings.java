@@ -42,7 +42,7 @@ public class ArmSettings {
         public static final double kG = 0.0;
         public static final double kVelocity = 0.0;
 
-        public static double GEAR_RATIO = 1 / 120; //For every 1 rotation of the arm, the motor rotates 120 times.
+        public static double GEAR_RATIO = 120 / 1; //For every 1 rotation of the arm, the motor rotates 120 times.
 
         public static final double armLengthMeters = Units.inchesToMeters(31);
     }
