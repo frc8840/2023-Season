@@ -50,32 +50,32 @@ public class ArmSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(0)
         ),
         INTAKE_FLOOR(
-            Rotation2d.fromDegrees(129), 
-            Rotation2d.fromDegrees(-5)
+            Rotation2d.fromDegrees(135.64), 
+            Rotation2d.fromDegrees(-26.86)
         ),
         INTAKE_SUBSTATION(
             Rotation2d.fromDegrees(0), 
             Rotation2d.fromDegrees(0)
         ),
         PLACING_HYBRID(
-            Rotation2d.fromDegrees(129), 
-            Rotation2d.fromDegrees(-5)
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
         ),
         PLACING_MIDDLE_CONE(
-            Rotation2d.fromDegrees(93),
-            Rotation2d.fromDegrees(-16)
+            Rotation2d.fromDegrees(111.92),
+            Rotation2d.fromDegrees(-68.07)
         ),
         PLACING_MIDDLE_CUBE(
-            Rotation2d.fromDegrees(79), 
-            Rotation2d.fromDegrees(-9)
+            Rotation2d.fromDegrees(84.28), 
+            Rotation2d.fromDegrees(-25.14)
         ),
         PLACING_UPPER_CONE(
-            Rotation2d.fromDegrees(137.1), 
-            Rotation2d.fromDegrees(-39.6)
+            Rotation2d.fromDegrees(158.21), 
+            Rotation2d.fromDegrees(-132.64)
         ),
         PLACING_UPPER_CUBE(
-            Rotation2d.fromDegrees(121), 
-            Rotation2d.fromDegrees(-25)
+            Rotation2d.fromDegrees(108.99), 
+            Rotation2d.fromDegrees(-67.64)
         );
 
         private Rotation2d baseAngle;
@@ -99,8 +99,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     public static final ArmStatus ARM_STATUS = ArmStatus.BOTH;
 
-    private static final double MAX_BASE_SPEED = 0.7;
-    private static final double MAX_ELBOW_SPEED = 0.7;
+    private static final double MAX_BASE_SPEED = 0.8;
+    private static final double MAX_ELBOW_SPEED = 0.8;
 
     private static ArmSubsystem instance;
 
