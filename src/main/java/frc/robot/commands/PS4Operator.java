@@ -82,6 +82,9 @@ public class PS4Operator extends CommandBase {
 
     private boolean justMoved = false;
 
+    private boolean justWasControllingBase = false;
+    private boolean justWasControllingElbow = false;
+
     private Translation2d startAutoAlignPosition = null;
 
     private GrabberSubsystem grabberSubsystem;
@@ -89,7 +92,7 @@ public class PS4Operator extends CommandBase {
 
     private OperateState state = OperateState.NONE;
 
-    private ArmOperationMode armOperationMode = ArmOperationMode.PRESET_POSITIONS;
+    private ArmOperationMode armOperationMode = ArmOperationMode.OPEN_LOOP_MANUAL;
     private ArmLocation armLocation = ArmLocation.RESTING;
 
     private String side = "blue";
@@ -397,17 +400,21 @@ public class PS4Operator extends CommandBase {
                     SmartDashboard.putNumber("arm_angle", baseAngle);
                     armSubsystem.setBasePosition(Rotation2d.fromDegrees(baseAngle));
                 }
-            } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL) {
+            } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL || this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
                 if (Math.abs(controller.getLeftY()) > 0.1) {
                     armSubsystem.baseOpenLoop(-controller.getLeftY() * 0.6);
-                } else {
+                    justWasControllingBase = true;
+                } else if (justWasControllingBase) {
                     armSubsystem.baseOpenLoop(0);
+                    justWasControllingBase = false;
                 }
 
                 if (Math.abs(controller.getRightY()) > 0.1) {
                     armSubsystem.elbowOpenLoop(controller.getRightY() * 0.6);
-                } else {
+                    justWasControllingElbow = true;
+                } else if (justWasControllingElbow) {
                     armSubsystem.elbowOpenLoop(0);
+                    justWasControllingElbow = false;
                 }
             } else if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
                 final int[] poleGrids = new int[] {
