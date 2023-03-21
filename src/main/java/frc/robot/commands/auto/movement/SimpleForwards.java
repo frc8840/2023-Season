@@ -17,6 +17,8 @@ public class SimpleForwards extends CommandBase {
     public void initialize() {
         Logger.Log("[SimpleForwards] Started SimpleForwards!");
         startTime = System.currentTimeMillis();
+
+        RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
     }
 
     @Override
