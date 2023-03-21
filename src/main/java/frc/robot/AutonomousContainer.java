@@ -120,8 +120,14 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        PathPlanner.addAuto("Testing", new PathPlanner(
+            PathConjugate.waitForPath(),
+            PathConjugate.command(new StopDrive()),
+            onFinish
+        ));
+
         //TODO: REMOVE
-        PathPlanner.selectAuto("Mid_Shoot_Forward");
+        PathPlanner.selectAuto("Testing");
     }
 
     static void updateAboutAutonomousLocation() {

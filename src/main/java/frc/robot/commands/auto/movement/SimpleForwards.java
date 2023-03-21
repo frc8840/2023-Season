@@ -27,7 +27,7 @@ public class SimpleForwards extends CommandBase {
 
         if (now - startTime < ms) {
             Translation2d movement = new Translation2d(
-                -2,
+                2,
                 0
             );
 

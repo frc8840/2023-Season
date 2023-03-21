@@ -109,17 +109,17 @@ public class ChargedUpRobot extends EventListener {
                     Units.inchesToMeters(Measurements.Field.WIDTH) - pose.getX(), 
                     pose.getY(), Rotation2d.fromDegrees(0)
                 );
-                // Pose2d lastPose = PathPlanner.getSelectedAuto().current().getPath().getLastPose();
+                Pose2d lastPose = PathPlanner.getSelectedAuto().current().getPath().getLastPose();
 
-                // //Find Difference between the two poses
-                // double xDiff = (pose.getTranslation().getX() - lastPose.getTranslation().getX());
-                // double yDiff = (pose.getTranslation().getY() - lastPose.getTranslation().getY());
+                //Find Difference between the two poses
+                double xDiff = (pose.getTranslation().getX() - lastPose.getTranslation().getX());
+                double yDiff = (pose.getTranslation().getY() - lastPose.getTranslation().getY());
 
-                // //Create a new translation with the difference
-                // Translation2d translation = new Translation2d(xDiff / Robot.DELTA_TIME, yDiff / Robot.DELTA_TIME);
+                //Create a new translation with the difference
+                Translation2d translation = new Translation2d(xDiff / Robot.DELTA_TIME, yDiff / Robot.DELTA_TIME);
 
-                // //Use pose to calculate the swerve module states
-                // swerveDrive.drive(translation, pose.getRotation().getRadians(), true, false);
+                //Use pose to calculate the swerve module states
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, pose.getRotation().getRadians(), true, Robot.isReal());
 
                 CommunicationManager.getInstance().updateRobotPose(pose);
             }
