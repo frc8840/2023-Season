@@ -115,7 +115,7 @@ public class AutonomousContainer {
             PathConjugate.runOnce(() -> {
                 GrabberSubsystem.getInstance().stopOuttake();
             }),
-            PathConjugate.command(new SimpleForwards(2)),
+            PathConjugate.command(new SimpleForwards(2000)),
             PathConjugate.command(new StopDrive()),
             onFinish
         ));
