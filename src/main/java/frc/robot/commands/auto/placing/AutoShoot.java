@@ -47,4 +47,9 @@ public class AutoShoot extends CommandBase {
             GrabberSubsystem.getInstance().outtake(this.type.speed);
         }
     }
+
+    @Override
+    public boolean isFinished() {
+        return System.currentTimeMillis() - startTime >= runTime;
+    }
 }
