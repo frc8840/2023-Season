@@ -45,6 +45,8 @@ public class GrabberSubsystem extends SubsystemBase {
     private CANSparkMax grabberMotor;
     private SparkMaxEncoderWrapper grabberEncoder;
 
+    private double customSpeed = 0;
+
     public GrabberSubsystem() {
         instance = this;
 
@@ -77,11 +79,9 @@ public class GrabberSubsystem extends SubsystemBase {
     }
 
     public void intake(LoadedPiece piece) {
-        if (state == GrabberState.OPEN) {
-            state = GrabberState.ACTIVE;
-            direction = GrabberDirection.IN;
-            loadedPiece = piece;
-        }
+        state = GrabberState.ACTIVE;
+        direction = GrabberDirection.IN;
+        loadedPiece = piece;
     }
 
     public void stopIntake() {
@@ -89,15 +89,19 @@ public class GrabberSubsystem extends SubsystemBase {
     }
 
     public void outtake() {
-        if (state == GrabberState.CLOSED) {
-            state = GrabberState.ACTIVE;
-            direction = GrabberDirection.OUT;
-            loadedPiece = LoadedPiece.NONE;
-        }
+        state = GrabberState.ACTIVE;
+        direction = GrabberDirection.OUT;
+        loadedPiece = LoadedPiece.NONE;
+    }
+
+    public void outtake(double speed) {
+        customSpeed = speed;
+        outtake();
     }
 
     public void stopOuttake() {
         state = GrabberState.OPEN;
+        customSpeed = 0;
     }
 
     public void stopPickOrPlace() {
@@ -132,14 +136,14 @@ public class GrabberSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (coneHoldStrat == ConeHoldStrat.SLOW_BACKWARDS && loadedPiece == LoadedPiece.CONE && state == GrabberState.CLOSED) {
-            grabberMotor.set(0.02); //TODO: TUNE
+            grabberMotor.set(0.02);
         }
 
         if (state == GrabberState.ACTIVE) {
             if (direction == GrabberDirection.IN) {
-                grabberMotor.set(0.5); //TODO: TUNE
+                grabberMotor.set(-0.5);
             } else {
-                grabberMotor.set(-0.5); //TODO: TUNE
+                grabberMotor.set(customSpeed == 0 ? 0.1 : customSpeed);
             }
         } else {
             grabberMotor.set(0);

@@ -67,7 +67,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (Robot.isSimulation()) return;
+        if (Robot.isSimulation() || Robot.isReal()) return;
         if (!Robot.getRealInstance().ready()) return;
 
         PhotonPipelineResult result;

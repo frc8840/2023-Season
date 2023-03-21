@@ -46,24 +46,24 @@ public class ArmSubsystem extends SubsystemBase {
 
     public static enum ArmState {
         RESTING(
-            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(10), 
             Rotation2d.fromDegrees(0)
         ),
         INTAKE_FLOOR(
-            Rotation2d.fromDegrees(135.64), 
-            Rotation2d.fromDegrees(-26.86)
+            Rotation2d.fromDegrees(148.64), 
+            Rotation2d.fromDegrees(-30.86)
         ),
         INTAKE_SUBSTATION(
             Rotation2d.fromDegrees(0), 
             Rotation2d.fromDegrees(0)
         ),
         PLACING_HYBRID(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+            Rotation2d.fromDegrees(135.64), 
+            Rotation2d.fromDegrees(-26.86)
         ),
         PLACING_MIDDLE_CONE(
-            Rotation2d.fromDegrees(111.92),
-            Rotation2d.fromDegrees(-68.07)
+            Rotation2d.fromDegrees(135.64),
+            Rotation2d.fromDegrees(-26.86)
         ),
         PLACING_MIDDLE_CUBE(
             Rotation2d.fromDegrees(84.28), 
@@ -160,6 +160,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void configureBaseMotor() {
+        baseEncoder.setManualOffset(true);
+        baseEncoder.setPosition(0);
+
         baseEncoder.setManualConversion(Robot.isSimulation());
 
         baseMotor.restoreFactoryDefaults();
@@ -193,6 +196,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         basePID.setOutputRange(-MAX_BASE_SPEED, MAX_BASE_SPEED);
 
+        baseMotor.setClosedLoopRampRate(1);
+
         basePID.setFeedbackDevice(baseEncoder.getEncoder());
 
         //Burn to flash
@@ -200,6 +205,9 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void configureElbowMotor() {
+        elbowEncoder.setManualOffset(true);
+        elbowEncoder.setPosition(0);
+
         elbowMotor.restoreFactoryDefaults();
         
         elbowMotor.setInverted(ArmSettings.Elbow.INVERTED);
@@ -231,10 +239,17 @@ public class ArmSubsystem extends SubsystemBase {
 
         elbowPID.setOutputRange(-MAX_ELBOW_SPEED, MAX_ELBOW_SPEED); //TODO: edit
 
+        elbowMotor.setClosedLoopRampRate(1);
+
         elbowPID.setFeedbackDevice(elbowEncoder.getEncoder());
 
         //Burn to flash
         elbowMotor.burnFlash();
+    }
+
+    public void resetToZeros() {
+        if (ARM_STATUS.base()) baseEncoder.setPosition(-baseEncoder.getPosition());
+        if (ARM_STATUS.elbow()) elbowEncoder.setPosition(-elbowEncoder.getPosition());
     }
 
     private void configMotors() {

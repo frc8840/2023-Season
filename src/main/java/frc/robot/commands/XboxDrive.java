@@ -6,7 +6,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,8 +30,8 @@ public class XboxDrive extends CommandBase {
         }
     }
 
-    private final static double maxSpeed = 3;
-    private final static double slowModeSpeed = 1;
+    private final static double maxSpeed = 10;
+    private final static double slowModeSpeed = 3;
 
     /**
      * Buttons:
@@ -65,7 +64,7 @@ public class XboxDrive extends CommandBase {
 
     public XboxDrive(DriveSubsystem driveSubsystem) {
         //Setup Controllers
-        if (Robot.isReal()) this.controller = new XboxController(ControllerConstants.DRIVE_XBOX_CONTROLLER);
+        if (Robot.isReal() || Robot.os() == Robot.OS.WINDOWS) this.controller = new XboxController(ControllerConstants.DRIVE_XBOX_CONTROLLER);
         this.simulatedController = new SimulatedController();
 
         //Setup Drive Subsystem
@@ -102,22 +101,22 @@ public class XboxDrive extends CommandBase {
 
             zeroModeTrigger = new Trigger(controller::getBButton).onTrue(
                 Commands.runOnce(() -> {
-                    if (!driveMode.normalOr(DriveMode.ZEROED)) return;
-                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.ZEROED : DriveMode.NORMAL;
+                    // if (!driveMode.normalOr(DriveMode.ZEROED)) return;
+                    // driveMode = driveMode == DriveMode.NORMAL ? DriveMode.ZEROED : DriveMode.NORMAL;
                 })
             );
 
             spinnyBoiTrigger = new Trigger(controller::getAButton).onTrue(
                 Commands.runOnce(() -> {
-                    if (!driveMode.normalOr(DriveMode.SPINNY_BOI)) return;
-                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.SPINNY_BOI : DriveMode.NORMAL;
+                    // if (!driveMode.normalOr(DriveMode.SPINNY_BOI)) return;
+                    // driveMode = driveMode == DriveMode.NORMAL ? DriveMode.SPINNY_BOI : DriveMode.NORMAL;
                 })
             );
 
             testTrigger = new Trigger(controller::getYButton).onTrue(
                 Commands.runOnce(() -> {
-                    if (!driveMode.normalOr(DriveMode.TESTING)) return;
-                    driveMode = driveMode == DriveMode.NORMAL ? DriveMode.TESTING : DriveMode.NORMAL;
+                    // if (!driveMode.normalOr(DriveMode.TESTING)) return;
+                    // driveMode = driveMode == DriveMode.NORMAL ? DriveMode.TESTING : DriveMode.NORMAL;
                 })
             );
         }
@@ -154,9 +153,9 @@ public class XboxDrive extends CommandBase {
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
         if (controller.getXButtonPressed()) {
-            driveSubsystem.getSwerveDrive().resetToAbsolute();
-            Logger.Log("[Swerve] RESET TO ABSOLUTE!");
-            return;
+            // driveSubsystem.getSwerveDrive().resetToAbsolute();
+            // Logger.Log("[Swerve] RESET TO ABSOLUTE!");
+            // return;
         }
 
         if (driveMode == DriveMode.SPINNY_BOI) {

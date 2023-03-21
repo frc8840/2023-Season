@@ -93,7 +93,7 @@ public class ChargedUpRobot extends EventListener {
         m_robotContainer.onPhaseChange();
 
         if (!PathPlanner.selectedAuto()) {
-            Logger.Log("[Auto] No logger selected! Going with the suggested auto based on the field layout.");
+            Logger.Log("[Auto] No auto selected! Going with the suggested auto based on the field layout.");
         } else {
             PathPlanner.getSelectedAuto().start();
         }

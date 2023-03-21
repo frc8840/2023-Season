@@ -6,6 +6,11 @@ import java.nio.file.Path;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auto.IntakeCommand;
 import frc.robot.commands.auto.PlacePiece;
+import frc.robot.commands.auto.movement.SimpleForwards;
+import frc.robot.commands.auto.movement.StopDrive;
+import frc.robot.commands.auto.placing.AutoShoot;
+import frc.robot.commands.auto.placing.AutoShoot.ShootType;
+import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.pathing.PathConjugate;
 import frc.team_8840_lib.pathing.PathPlanner;
@@ -36,74 +41,87 @@ public class AutonomousContainer {
         
         String home = System.getProperty("user.home");
 
-        PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_LOWER, new PathPlanner(
-            PathConjugate.runOnce(() -> {
-                updateAboutAutonomousLocation();
-                Logger.Log("[Auto] Started Blue Lower Auto!");
-            }),
-            PathConjugate.loadPathFromFile(Path.of(
-                home, "8840appdata", 
-                AutonomousContainer.Files.Blue.Lower.SEG_1
-            )),
-            PathConjugate.command(new IntakeCommand()),
-            PathConjugate.loadPathFromFile(Path.of(
-                home, "8840appdata", 
-                AutonomousContainer.Files.Blue.Lower.SEG_2
-            )),
-            PathConjugate.command(new PlacePiece()),
-            onFinish
-        ));
+        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_LOWER, new PathPlanner(
+        //     PathConjugate.runOnce(() -> {
+        //         updateAboutAutonomousLocation();
+        //         Logger.Log("[Auto] Started Blue Lower Auto!");
+        //     }),
+        //     PathConjugate.loadPathFromFile(Path.of(
+        //         home, "8840appdata", 
+        //         AutonomousContainer.Files.Blue.Lower.SEG_1
+        //     )),
+        //     PathConjugate.command(new IntakeCommand()),
+        //     PathConjugate.loadPathFromFile(Path.of(
+        //         home, "8840appdata", 
+        //         AutonomousContainer.Files.Blue.Lower.SEG_2
+        //     )),
+        //     PathConjugate.command(new PlacePiece()),
+        //     onFinish
+        // ));
 
-        PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_MIDDLE, new PathPlanner(
-            PathConjugate.runOnce(() -> {
-                updateAboutAutonomousLocation();
-                Logger.Log("[Auto] Started Blue Middle Auto!");
-            }),
-            PathConjugate.loadPathFromFile(Path.of(
-                home, "8840appdata", 
-                AutonomousContainer.Files.Blue.Middle.SEG_1
-            )),
-            PathConjugate.loadPathFromFile(Path.of(
-                home, "8840appdata", 
-                AutonomousContainer.Files.Blue.Middle.SEG_2
-            )),
-            onFinish
-        ));
+        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_MIDDLE, new PathPlanner(
+        //     PathConjugate.runOnce(() -> {
+        //         updateAboutAutonomousLocation();
+        //         Logger.Log("[Auto] Started Blue Middle Auto!");
+        //     }),
+        //     PathConjugate.loadPathFromFile(Path.of(
+        //         home, "8840appdata", 
+        //         AutonomousContainer.Files.Blue.Middle.SEG_1
+        //     )),
+        //     PathConjugate.loadPathFromFile(Path.of(
+        //         home, "8840appdata", 
+        //         AutonomousContainer.Files.Blue.Middle.SEG_2
+        //     )),
+        //     onFinish
+        // ));
 
-        PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_UPPER, new PathPlanner(
-            PathConjugate.runOnce(() -> {
-                updateAboutAutonomousLocation();
-                Logger.Log("[Auto] Started Blue Upper Auto!");
-            }),
-            onFinish
-        ));
+        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_UPPER, new PathPlanner(
+        //     PathConjugate.runOnce(() -> {
+        //         updateAboutAutonomousLocation();
+        //         Logger.Log("[Auto] Started Blue Upper Auto!");
+        //     }),
+        //     onFinish
+        // ));
 
-        PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_LOWER, new PathPlanner(
-            PathConjugate.runOnce(() -> {
-                updateAboutAutonomousLocation();
-                Logger.Log("[Auto] Started Red Lower Auto!");
-            }),
-            onFinish
-        ));
+        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_LOWER, new PathPlanner(
+        //     PathConjugate.runOnce(() -> {
+        //         updateAboutAutonomousLocation();
+        //         Logger.Log("[Auto] Started Red Lower Auto!");
+        //     }),
+        //     onFinish
+        // ));
 
-        PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_MIDDLE, new PathPlanner(
-            PathConjugate.runOnce(() -> {
-                updateAboutAutonomousLocation();
-                Logger.Log("[Auto] Started Red Middle Auto!");
-            }),
-            onFinish
-        ));
+        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_MIDDLE, new PathPlanner(
+        //     PathConjugate.runOnce(() -> {
+        //         updateAboutAutonomousLocation();
+        //         Logger.Log("[Auto] Started Red Middle Auto!");
+        //     }),
+        //     onFinish
+        // ));
 
-        PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_UPPER, new PathPlanner(
+        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_UPPER, new PathPlanner(
+        //     PathConjugate.runOnce(() -> {
+        //         updateAboutAutonomousLocation();
+        //         Logger.Log("[Auto] Started Red Upper Auto!");
+        //     }),
+        //     onFinish
+        // ));
+
+        PathPlanner.addAuto("Mid_Shoot_Forward", new PathPlanner(
             PathConjugate.runOnce(() -> {
-                updateAboutAutonomousLocation();
-                Logger.Log("[Auto] Started Red Upper Auto!");
+                SmartDashboard.putString("Auto", "Started");
             }),
+            PathConjugate.command(new AutoShoot(ShootType.MID)),
+            PathConjugate.runOnce(() -> {
+                GrabberSubsystem.getInstance().stopOuttake();
+            }),
+            PathConjugate.command(new SimpleForwards(2)),
+            PathConjugate.command(new StopDrive()),
             onFinish
         ));
 
         //TODO: REMOVE
-        PathPlanner.selectAuto(PathPlanner.AUTOS.ChargedUp.BLUE_LOWER);
+        PathPlanner.selectAuto("Mid_Shoot_Forward");
     }
 
     static void updateAboutAutonomousLocation() {

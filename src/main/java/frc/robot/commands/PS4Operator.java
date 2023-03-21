@@ -51,15 +51,15 @@ public class PS4Operator extends CommandBase {
     /**
      * -- Controls: --
      * 
-     * Square: Cube Intake
-     * Circle: (Arm Operate, Manual Closed Loop): Move arm to position 
-     * Triangle: Auto Align
-     * Cross: Cone Intake
+     * Square: Intake
+     * Circle: (PRESET) Arm to intake and back, (Arm Operate, Manual Closed Loop): Move arm to position 
+     * Triangle: [Disabled] Auto Align
+     * Cross: Outake
      * 
      * Arrows: 
      * 
      * L1: Select Position
-     * L2: Change Side (display + operations)
+     * L2: (Slow Outtake)
      * R1: Move arm to pre-set position.
      * R2: STOP ARM
      * 
@@ -72,7 +72,8 @@ public class PS4Operator extends CommandBase {
     private Trigger cubeTrigger;
 
     private Trigger switchSideTrigger;
-    private Trigger selectTrigger;
+
+    private Trigger pickupTrigger;
 
     private int rowHover = 0;
     private int columnHover = 0;
@@ -92,12 +93,16 @@ public class PS4Operator extends CommandBase {
 
     private OperateState state = OperateState.NONE;
 
-    private ArmOperationMode armOperationMode = ArmOperationMode.OPEN_LOOP_MANUAL;
+    private ArmOperationMode armOperationMode = ArmOperationMode.PRESET_POSITIONS;
     private ArmLocation armLocation = ArmLocation.RESTING;
 
     private String side = "blue";
 
     private double baseAngle = 0;
+
+    final int[] poleGrids = new int[] {
+        0, 2, 3, 5, 6, 8
+    };
 
     public PS4Operator(GrabberSubsystem grabberSubsystem, ArmSubsystem armSubsystem) {
         controller = new PS4Controller(ControllerConstants.OPERATOR_PS4_CONTROLLER);
@@ -107,11 +112,9 @@ public class PS4Operator extends CommandBase {
 
         coneTrigger = new Trigger(controller::getCrossButton).onTrue(
             Commands.runOnce(() -> {
-                if (grabberSubsystem.getLoadedPiece() == GrabberSubsystem.LoadedPiece.NONE) {
-                    grabberSubsystem.intake(GrabberSubsystem.LoadedPiece.CONE);
-                } else {
-                    grabberSubsystem.outtake();
-                }
+                if (controller.getSquareButton()) return;
+
+                grabberSubsystem.outtake();
 
                 grabberSubsystem.updateDashboard();
             })
@@ -127,11 +130,9 @@ public class PS4Operator extends CommandBase {
 
         cubeTrigger = new Trigger(controller::getSquareButton).onTrue(
             Commands.runOnce(() -> {
-                if (grabberSubsystem.getLoadedPiece() == GrabberSubsystem.LoadedPiece.NONE) {
-                    grabberSubsystem.intake(GrabberSubsystem.LoadedPiece.CUBE);
-                } else {
-                    grabberSubsystem.outtake();
-                }
+                if (controller.getCrossButton()) return;
+
+                grabberSubsystem.outtake();
 
                 grabberSubsystem.updateDashboard();
             })
@@ -151,11 +152,19 @@ public class PS4Operator extends CommandBase {
             })
         );
 
-        selectTrigger = new Trigger(controller::getL1Button).onTrue(
+        pickupTrigger = new Trigger(controller::getCircleButton).onTrue(
             Commands.runOnce(() -> {
-                selectedRow = rowHover;
-                selectedColumn = columnHover;
-                updateSelected();
+                if (armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
+                    if (armLocation == ArmLocation.IN_POSITION) {
+                        armLocation = ArmLocation.RESTING;
+                        armSubsystem.setPosition(ArmState.RESTING);
+                        CommunicationManager.getInstance().updateInfo("arm", "position_name", "resting");
+                    } else {
+                        armLocation = ArmLocation.IN_POSITION;
+                        armSubsystem.setPosition(ArmState.INTAKE_FLOOR);
+                        CommunicationManager.getInstance().updateInfo("arm", "position_name", "intake_floor");
+                    }
+                }
             })
         );
 
@@ -189,9 +198,13 @@ public class PS4Operator extends CommandBase {
     public void initialize() {
         updateSelected();
 
+        SmartDashboard.putString("ARM_STRING", "");
+
         CommunicationManager.getInstance().updateInfo(
             "custom_component", "Placing Display/side", "blue" //TODO: change depending on alliance
         );
+
+        CommunicationManager.getInstance().updateInfo("arm", "position_name", "resting");
     }
 
     public void updateSelected() {
@@ -202,6 +215,25 @@ public class PS4Operator extends CommandBase {
         CommunicationManager.getInstance().updateInfo(
             "custom_component", "Placing Display/selected", (selectedColumn * 3) + selectedRow
         );
+
+        String level = "";
+        String place_type = "";
+
+        if (columnHover == 0) {
+            level = "HIGH";
+        } else if (columnHover == 1) {
+            level = "MIDDLE";
+        } else if (columnHover == 2) {
+            level = "HYBRID";
+        }
+
+        if (Arrays.binarySearch(poleGrids, rowHover) >= 0) {
+            place_type = "CONE";
+        } else {
+            place_type = "CUBE";
+        }
+
+        SmartDashboard.putString("ARM_TO", level + " " + place_type);
     }
 
     private boolean interruptedAutoAlign = false;
@@ -343,13 +375,43 @@ public class PS4Operator extends CommandBase {
     @Override
     public void execute() {
         //Auto Align Chooser
+        // if (!justMoved && controller.getPOV() >= 0) {
+        //     justMoved = true;
+
+        //     if (controller.getPOV() == 270) {
+        //         rowHover += (side == "blue" ? -1 : 1);
+        //     } else if (controller.getPOV() == 90) {
+        //         rowHover += (side == "blue" ? 1 : -1);
+        //     } else if (controller.getPOV() == 0) {
+        //         columnHover -= 1;
+        //     } else if (controller.getPOV() == 180) {
+        //         columnHover += 1;
+        //     }
+
+        //     if (columnHover < 0) {
+        //         columnHover = 0;
+        //     } else if (columnHover > 8) {
+        //         columnHover = 8;
+        //     }
+
+        //     if (rowHover < 0) {
+        //         rowHover = 0;
+        //     } else if (rowHover > 2) {
+        //         rowHover = 2;
+        //     }
+
+        //     updateSelected();
+        // } else if (controller.getPOV() < 0) {
+        //     justMoved = false;
+        // }
+
         if (!justMoved && controller.getPOV() >= 0) {
             justMoved = true;
 
             if (controller.getPOV() == 270) {
-                rowHover += (side == "blue" ? -1 : 1);
+                rowHover = rowHover == 0 ? 1 : 0;
             } else if (controller.getPOV() == 90) {
-                rowHover += (side == "blue" ? 1 : -1);
+                rowHover = rowHover == 0 ? 1 : 0;
             } else if (controller.getPOV() == 0) {
                 columnHover -= 1;
             } else if (controller.getPOV() == 180) {
@@ -357,20 +419,12 @@ public class PS4Operator extends CommandBase {
             }
 
             if (columnHover < 0) {
+                columnHover = 2;
+            } else if (columnHover > 2) {
                 columnHover = 0;
-            } else if (columnHover > 8) {
-                columnHover = 8;
-            }
-
-            if (rowHover < 0) {
-                rowHover = 0;
-            } else if (rowHover > 2) {
-                rowHover = 2;
             }
 
             updateSelected();
-        } else if (controller.getPOV() < 0) {
-            justMoved = false;
         }
 
         if (controller.getR2Button()) {
@@ -417,16 +471,12 @@ public class PS4Operator extends CommandBase {
                     justWasControllingElbow = false;
                 }
             } else if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
-                final int[] poleGrids = new int[] {
-                    0, 2, 3, 5, 6, 8
-                };
-
                 if (controller.getR1ButtonPressed()) {
                     String operationName = "none";
 
                     if (armLocation == ArmLocation.RESTING) {
-                        if (Arrays.binarySearch(poleGrids, selectedRow) >= 0) {
-                            switch (selectedColumn) {
+                        if (Arrays.binarySearch(poleGrids, rowHover) >= 0) {
+                            switch (columnHover) {
                                 case 0:
                                     armSubsystem.setPosition(ArmState.PLACING_UPPER_CONE);
                                     operationName = "upper_cone";
@@ -441,7 +491,7 @@ public class PS4Operator extends CommandBase {
                                     break;
                             }
                         } else {
-                            switch (selectedColumn) {
+                            switch (columnHover) {
                                 case 0:
                                     armSubsystem.setPosition(ArmState.PLACING_UPPER_CUBE);
                                     operationName = "upper_cube";
