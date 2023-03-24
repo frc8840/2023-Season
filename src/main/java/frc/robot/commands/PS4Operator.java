@@ -20,6 +20,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem;
 import frc.robot.subsystems.arm.ArmSubsystem.ArmState;
 import frc.robot.subsystems.intake.GrabberSubsystem;
+import frc.robot.subsystems.intake.GrabberSubsystem.LoadedPiece;
 import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utils.ControllerConstants;
 import frc.robot.utils.Measurements;
@@ -132,7 +133,9 @@ public class PS4Operator extends CommandBase {
             Commands.runOnce(() -> {
                 if (controller.getCrossButton()) return;
 
-                grabberSubsystem.outtake();
+                grabberSubsystem.intake(
+                    LoadedPiece.CUBE
+                );
 
                 grabberSubsystem.updateDashboard();
             })

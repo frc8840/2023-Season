@@ -57,6 +57,7 @@ public class RobotContainer {
             driveSubsystem.resetOdometry();
         } else if (phase == GamePhase.Teleop) {
             driveSubsystem.setBrakeMode(BrakeMode.NORMAL);
+            driveSubsystem.getSwerveDrive().triggerNoOptimization();
         }
     }
 }

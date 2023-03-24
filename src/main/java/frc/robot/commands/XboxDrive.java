@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveSubsystem.BrakeMode;
 import frc.robot.utils.ControllerConstants;
@@ -86,6 +87,10 @@ public class XboxDrive extends CommandBase {
                     if (!driveMode.normalOr(DriveMode.X_BRAKE)) return;
                     driveMode = driveMode == DriveMode.NORMAL ? DriveMode.X_BRAKE : DriveMode.NORMAL;
                     adjustBrakeModeBasedOnMode();
+
+                    if (driveMode == DriveMode.NORMAL) {
+                        RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
+                    }
                 })
             );
 
