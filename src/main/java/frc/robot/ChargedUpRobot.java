@@ -118,8 +118,8 @@ public class ChargedUpRobot extends EventListener {
                 );
 
                 //Find Difference between the two poses
-                double xDiff = -(pose.getTranslation().getX() - lastPose.getTranslation().getX());
-                double yDiff = (pose.getTranslation().getY() - lastPose.getTranslation().getY());
+                double xDiff = -Units.metersToFeet(pose.getTranslation().getX() - lastPose.getTranslation().getX());
+                double yDiff = Units.metersToFeet(pose.getTranslation().getY() - lastPose.getTranslation().getY());
 
                 //Create a new translation with the difference
                 Translation2d translation = new Translation2d(xDiff / Robot.DELTA_TIME, yDiff / Robot.DELTA_TIME);
@@ -127,7 +127,7 @@ public class ChargedUpRobot extends EventListener {
                 //Use pose to calculate the swerve module states
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, pose.getRotation().getRadians(), true, Robot.isReal());
 
-                System.out.println(translation.getX() + " " + translation.getY());
+                //System.out.println(translation.getX() + " " + translation.getY());
 
                 CommunicationManager.getInstance().updateRobotPose(pose);
             }

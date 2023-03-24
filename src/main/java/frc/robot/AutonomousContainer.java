@@ -121,6 +121,9 @@ public class AutonomousContainer {
         ));
 
         PathPlanner.addAuto("Testing", new PathPlanner(
+            PathConjugate.runOnce(() -> {
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
+            }),
             PathConjugate.waitForPath(),
             PathConjugate.command(new StopDrive()),
             onFinish

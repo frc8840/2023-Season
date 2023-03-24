@@ -97,7 +97,7 @@ public class ArmSubsystem extends SubsystemBase {
         new Translation2d(Measurements.Robot.LENGTH / 2, Measurements.Robot.BASE_HEIGHT)
     };
 
-    public static final ArmStatus ARM_STATUS = ArmStatus.BOTH;
+    public static final ArmStatus ARM_STATUS = ArmStatus.NO_ARM;
 
     private static final double MAX_BASE_SPEED = 0.8;
     private static final double MAX_ELBOW_SPEED = 0.8;
