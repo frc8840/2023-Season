@@ -22,7 +22,7 @@ public class AutoShoot extends CommandBase {
         }
     }
 
-    private static final double runTime = 1000;
+    private static final double runTime = 700;
 
     private ShootType type;
 

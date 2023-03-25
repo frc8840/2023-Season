@@ -153,8 +153,10 @@ public class XboxDrive extends CommandBase {
 
     @Override
     public void execute() {
+        //If not in teleop, return and do nothing
         if (GamePhase.getCurrentPhase() != GamePhase.Teleop) return;
         
+        //Send the drive mode to network tables
         SmartDashboard.putString("Drive Mode", driveMode.name());
 
         if (controller.getXButtonPressed()) {
@@ -163,6 +165,7 @@ public class XboxDrive extends CommandBase {
             // return;
         }
 
+        //Based on the drive mode we are in, do different things.
         if (driveMode == DriveMode.SPINNY_BOI) {
             driveSubsystem.getSwerveDrive().spin(controller.getRightX() * 18);
             return;
@@ -194,24 +197,30 @@ public class XboxDrive extends CommandBase {
             return;
         }
 
+        //If we are in auto drive, return and do nothing
         if (driveSubsystem.isInAutoDrive()) return;
         
+        //If the threshold is not met, stop the robot
         if (Math.abs(getForward()) < 0.1 && Math.abs(getStrafe()) < 0.1) {
             if (Math.abs(getRightX()) < 0.1) {
                 driveSubsystem.getSwerveDrive().stop();
             } else {
+                //If the rotate threshold is met, rotate the robot
                 driveSubsystem.getSwerveDrive().spin(getRightX() * 13);
             }
             return;
         }
 
+        //Construct a Translation2d with the forward and strafe values
         Translation2d driveTranslation = new Translation2d(
             getForward(),
             getStrafe()
         );
 
+        //Multiply the translation by the max speed or the slow mode speed based on whether or not we are in slow mode
         driveTranslation = driveTranslation.times(inSlowMode ? slowModeSpeed : maxSpeed);
 
+        //Drive the robot
         driveSubsystem.getSwerveDrive().drive(driveTranslation, getRightX() * 13, true, Robot.isReal());
     }
 

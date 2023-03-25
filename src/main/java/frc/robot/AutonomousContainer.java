@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.IntakeCommand;
 import frc.robot.commands.auto.PlacePiece;
+import frc.robot.commands.auto.general.Wait;
 import frc.robot.commands.auto.movement.SimpleForwards;
+import frc.robot.commands.auto.movement.SmallRotate;
 import frc.robot.commands.auto.movement.StopDrive;
 import frc.robot.commands.auto.placing.AutoShoot;
 import frc.robot.commands.auto.placing.AutoShoot.ShootType;
@@ -17,6 +20,17 @@ import frc.team_8840_lib.pathing.PathPlanner;
 
 public class AutonomousContainer {
     public static class Files {
+        public static class General {
+            public static class Testing {
+                public static final String SEG_1 = "testing_seg_1.json";
+                public static final String SEG_2 = "testing_seg_2.json";
+            }
+            public static class TopCorner {
+                public static final String SEG_1 = "top_corner_seg_1.json";
+                public static final String SEG_2 = "top_corner_seg_2.json";
+            }
+        }
+
         public static class Blue {
             public static class Lower {
                 public static final String SEG_1 = "auton/blue_lower/seg_1.json";
@@ -41,72 +55,6 @@ public class AutonomousContainer {
         
         String home = System.getProperty("user.home");
 
-        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_LOWER, new PathPlanner(
-        //     PathConjugate.runOnce(() -> {
-        //         updateAboutAutonomousLocation();
-        //         Logger.Log("[Auto] Started Blue Lower Auto!");
-        //     }),
-        //     PathConjugate.loadPathFromFile(Path.of(
-        //         home, "8840appdata", 
-        //         AutonomousContainer.Files.Blue.Lower.SEG_1
-        //     )),
-        //     PathConjugate.command(new IntakeCommand()),
-        //     PathConjugate.loadPathFromFile(Path.of(
-        //         home, "8840appdata", 
-        //         AutonomousContainer.Files.Blue.Lower.SEG_2
-        //     )),
-        //     PathConjugate.command(new PlacePiece()),
-        //     onFinish
-        // ));
-
-        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_MIDDLE, new PathPlanner(
-        //     PathConjugate.runOnce(() -> {
-        //         updateAboutAutonomousLocation();
-        //         Logger.Log("[Auto] Started Blue Middle Auto!");
-        //     }),
-        //     PathConjugate.loadPathFromFile(Path.of(
-        //         home, "8840appdata", 
-        //         AutonomousContainer.Files.Blue.Middle.SEG_1
-        //     )),
-        //     PathConjugate.loadPathFromFile(Path.of(
-        //         home, "8840appdata", 
-        //         AutonomousContainer.Files.Blue.Middle.SEG_2
-        //     )),
-        //     onFinish
-        // ));
-
-        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.BLUE_UPPER, new PathPlanner(
-        //     PathConjugate.runOnce(() -> {
-        //         updateAboutAutonomousLocation();
-        //         Logger.Log("[Auto] Started Blue Upper Auto!");
-        //     }),
-        //     onFinish
-        // ));
-
-        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_LOWER, new PathPlanner(
-        //     PathConjugate.runOnce(() -> {
-        //         updateAboutAutonomousLocation();
-        //         Logger.Log("[Auto] Started Red Lower Auto!");
-        //     }),
-        //     onFinish
-        // ));
-
-        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_MIDDLE, new PathPlanner(
-        //     PathConjugate.runOnce(() -> {
-        //         updateAboutAutonomousLocation();
-        //         Logger.Log("[Auto] Started Red Middle Auto!");
-        //     }),
-        //     onFinish
-        // ));
-
-        // PathPlanner.addAuto(PathPlanner.AUTOS.ChargedUp.RED_UPPER, new PathPlanner(
-        //     PathConjugate.runOnce(() -> {
-        //         updateAboutAutonomousLocation();
-        //         Logger.Log("[Auto] Started Red Upper Auto!");
-        //     }),
-        //     onFinish
-        // ));
-
         PathPlanner.addAuto("Mid_Shoot_Forward", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 SmartDashboard.putString("Auto", "Started");
@@ -117,6 +65,46 @@ public class AutonomousContainer {
             }),
             PathConjugate.command(new SimpleForwards(2000)),
             PathConjugate.command(new StopDrive()),
+            onFinish
+        ));
+
+        PathPlanner.addAuto("TopCorner", new PathPlanner(
+            //Move the arm up
+            PathConjugate.runOnce(() -> {
+                Logger.Log("[Auto] TODO: Move arm up!");
+            }),
+            PathConjugate.command(new AutoShoot(ShootType.MID)),
+            PathConjugate.runOnce(() -> {
+                GrabberSubsystem.getInstance().stopOuttake();
+            }),
+            PathConjugate.runOnce(() -> {
+                Logger.Log("[Auto] TODO: Move arm down!");
+            }),
+            //Reset the drive base so it'll actually move
+            PathConjugate.runOnce(() -> {
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
+            }),
+            PathConjugate.command(new SmallRotate()),
+            PathConjugate.command(new Wait(400)),
+            PathConjugate.loadPathFromFile(Path.of(home, Files.General.Testing.SEG_1)),
+            PathConjugate.runOnce(() -> {
+                Logger.Log("TODO: Arm Intake!");
+            }),
+            PathConjugate.command(new IntakeCommand(0)),
+            PathConjugate.runOnce(() -> {
+                GrabberSubsystem.getInstance().stopOuttake();
+            }),
+            PathConjugate.runOnce(() -> {
+                Logger.Log("TODO: Arm back!");
+            }),
+            PathConjugate.loadPathFromFile(Path.of(home, Files.General.Testing.SEG_2)),
+            PathConjugate.runOnce(() -> {
+                Logger.Log("TODO: Arm place!");
+            }),
+            PathConjugate.command(new AutoShoot(ShootType.MID)),
+            PathConjugate.runOnce(() -> {
+                GrabberSubsystem.getInstance().stopOuttake();
+            }),
             onFinish
         ));
 

@@ -124,6 +124,8 @@ public class ChargedUpRobot extends EventListener {
                 //Create a new translation with the difference
                 Translation2d translation = new Translation2d(xDiff / Robot.DELTA_TIME, yDiff / Robot.DELTA_TIME);
 
+                translation.times(1.1);
+
                 //Use pose to calculate the swerve module states
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, pose.getRotation().getRadians(), true, Robot.isReal());
 
