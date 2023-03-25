@@ -118,7 +118,7 @@ public class AutonomousContainer {
         ));
 
         //TODO: REMOVE
-        PathPlanner.selectAuto("Testing");
+        PathPlanner.selectAuto("TopCorner");
     }
 
     static void updateAboutAutonomousLocation() {
