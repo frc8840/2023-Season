@@ -90,7 +90,7 @@ public class AutonomousContainer {
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm Intake!");
             }),
-            PathConjugate.command(new IntakeCommand(0)),
+            PathConjugate.command(new IntakeCommand(200)),
             PathConjugate.runOnce(() -> {
                 GrabberSubsystem.getInstance().stopOuttake();
             }),

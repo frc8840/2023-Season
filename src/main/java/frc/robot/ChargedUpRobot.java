@@ -105,6 +105,16 @@ public class ChargedUpRobot extends EventListener {
                 //TODO: create a method in the drive subsystem that takes in the pose and the last pose to drive.
                 Pose2d pose = PathPlanner.getSelectedAuto().current().getPath().moveToNext();
 
+                Pose2d finalPose = PathPlanner.getSelectedAuto().current().getPath().getFinalPose();
+
+                finalPose = new Pose2d(
+                    Units.inchesToMeters(Measurements.Field.WIDTH) - finalPose.getX(),
+                    finalPose.getY(), Rotation2d.fromDegrees(0)
+                );
+
+                boolean hasRotationGoal = PathPlanner.getSelectedAuto().current().getPath().hasRotationGoal();
+                Rotation2d rotationGoal = PathPlanner.getSelectedAuto().current().getPath().getRotationGoal();
+
                 pose = new Pose2d( 
                     Units.inchesToMeters(Measurements.Field.WIDTH) - pose.getX(), 
                     pose.getY(), Rotation2d.fromDegrees(0)
@@ -127,11 +137,20 @@ public class ChargedUpRobot extends EventListener {
                 translation.times(1.1);
 
                 //Use pose to calculate the swerve module states
-                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, pose.getRotation().getRadians(), true, Robot.isReal());
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, 0, true, Robot.isReal());
 
-                //System.out.println(translation.getX() + " " + translation.getY());
-
+                //Update NT robot
                 CommunicationManager.getInstance().updateRobotPose(pose);
+
+                double xDifferenceBetweenFinalPose = Math.abs(finalPose.getTranslation().getX() - pose.getTranslation().getX());
+                double yDifferenceBetweenFinalPose = Math.abs(finalPose.getTranslation().getY() - pose.getTranslation().getY());
+
+                final double poseLeniency = Units.inchesToMeters(1);
+
+                //This is for when PID is pretty much done.
+                if (xDifferenceBetweenFinalPose < poseLeniency && yDifferenceBetweenFinalPose < poseLeniency) {
+                    PathPlanner.getSelectedAuto().next();
+                }
             }
             PathPlanner.getSelectedAuto().fixedExecute();
         }

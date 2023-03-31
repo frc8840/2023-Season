@@ -123,6 +123,12 @@ public class ArmSubsystem extends SubsystemBase {
     private double baseAngleCache;
     private double elbowAngleCache;
 
+    private double lastBaseForceStop = 0;
+    private double lastElbowForceStop = 0;
+
+    private double lastBaseSetpoint = 0;
+    private double lastElbowSetpoint = 0;
+
     public ArmSubsystem() {
         instance = this;
 
@@ -285,9 +291,11 @@ public class ArmSubsystem extends SubsystemBase {
     public void stop() {
         if (ARM_STATUS.base()) {
             baseMotor.set(0);
+            lastBaseForceStop = getBaseAngle();
         }
         if (ARM_STATUS.elbow()) {
             elbowMotor.set(0);
+            lastElbowForceStop = getRelativeElbowAngle();
         }
     }
 
@@ -304,6 +312,8 @@ public class ArmSubsystem extends SubsystemBase {
             0, 
             baseFeedforward.calculate(basePosition, ArmSettings.Base.kVelocity)
         );
+
+        lastBaseSetpoint = basePosition;
     }
 
     public void setElbowPosition(Rotation2d elbowPositionRot) {
@@ -319,6 +329,8 @@ public class ArmSubsystem extends SubsystemBase {
             0,
             elbowFeedforward.calculate(elbowPosition, ArmSettings.Elbow.kVelocity)
         );
+
+        lastElbowSetpoint = elbowPosition;
     }
 
     public void baseOpenLoop(double speed) {
@@ -339,6 +351,24 @@ public class ArmSubsystem extends SubsystemBase {
         }
 
         elbowMotor.set(speed);
+    }
+
+    public boolean isAtSetpointPosition() {
+        double baseError = Math.abs(getBaseAngle() - lastBaseSetpoint);
+        double elbowError = Math.abs(getRelativeElbowAngle() - lastElbowSetpoint);
+
+        return baseError < 1 && elbowError < 1;
+    }
+
+    public boolean atForceStopPosition() {
+        double baseError = Math.abs(getBaseAngle() - lastBaseForceStop);
+        double elbowError = Math.abs(getRelativeElbowAngle() - lastElbowForceStop);
+
+        return baseError < 1 && elbowError < 1;
+    }
+
+    public boolean atPosition() {
+        return isAtSetpointPosition() || atForceStopPosition();
     }
 
     public void reportToNetworkTables() {
@@ -529,6 +559,10 @@ public class ArmSubsystem extends SubsystemBase {
             return elbowAngleCache + getBaseAngle();
         }
 
+        if (!ARM_STATUS.base()) {
+            return 0;
+        }
+
         //The real angle is what it actually is in the real world
         return elbowEncoder.getPosition() + getBaseAngle();
     }
@@ -536,6 +570,10 @@ public class ArmSubsystem extends SubsystemBase {
     public double getRelativeElbowAngle() {
         if (Robot.isSimulation()) {
             return elbowAngleCache;
+        }
+
+        if (!ARM_STATUS.elbow()) {
+            return 0;
         }
 
         return elbowEncoder.getPosition();
