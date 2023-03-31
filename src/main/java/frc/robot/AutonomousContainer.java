@@ -20,6 +20,7 @@ import frc.team_8840_lib.pathing.PathPlanner;
 
 public class AutonomousContainer {
     public static class Files {
+        public static final String FOLDER = "8840appdata";
         public static class General {
             public static class Testing {
                 public static final String SEG_1 = "testing_seg_1.json";
@@ -86,7 +87,7 @@ public class AutonomousContainer {
             }),
             PathConjugate.command(new SmallRotate()),
             PathConjugate.command(new Wait(400)),
-            PathConjugate.loadPathFromFile(Path.of(home, Files.General.Testing.SEG_1)),
+            PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.Testing.SEG_1)),
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm Intake!");
             }),
@@ -97,7 +98,7 @@ public class AutonomousContainer {
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm back!");
             }),
-            PathConjugate.loadPathFromFile(Path.of(home, Files.General.Testing.SEG_2)),
+            PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.Testing.SEG_2)),
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm place!");
             }),
