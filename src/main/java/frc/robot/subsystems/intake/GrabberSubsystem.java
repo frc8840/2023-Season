@@ -14,6 +14,8 @@ public class GrabberSubsystem extends SubsystemBase {
         return instance;
     }
 
+    private static final boolean enabled = false;
+
     public enum GrabberState {
         OPEN,
         CLOSED,
@@ -49,6 +51,8 @@ public class GrabberSubsystem extends SubsystemBase {
 
     public GrabberSubsystem() {
         instance = this;
+
+        if (!enabled) return;
 
         state = GrabberState.OPEN;
         direction = GrabberDirection.IN;
@@ -135,6 +139,8 @@ public class GrabberSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (!enabled) return;
+
         if (coneHoldStrat == ConeHoldStrat.SLOW_BACKWARDS && loadedPiece == LoadedPiece.CONE && state == GrabberState.CLOSED) {
             grabberMotor.set(0.02);
         }

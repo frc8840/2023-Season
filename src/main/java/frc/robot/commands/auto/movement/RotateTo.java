@@ -8,6 +8,7 @@ import frc.team_8840_lib.utils.controllers.Pigeon;
 
 public class RotateTo extends CommandBase {
     private Rotation2d target;
+    private Rotation2d start;
     private Rotation2d leniency;
 
     public RotateTo(Rotation2d target, Rotation2d leniency) {
@@ -26,7 +27,7 @@ public class RotateTo extends CommandBase {
     
     @Override
     public void initialize() {
-        
+        start = Rotation2d.fromDegrees(Pigeon.getPigeon(ModuleConstants.PIGEON_ID).getYawPitchRoll()[0]);
     }
 
     @Override
@@ -34,30 +35,37 @@ public class RotateTo extends CommandBase {
         Rotation2d currentAngle = Rotation2d.fromDegrees(Pigeon.getPigeon(ModuleConstants.PIGEON_ID).getYawPitchRoll()[0]);
 
         double angle = target.getDegrees() - currentAngle.getDegrees();
+        double totalRotation = target.getDegrees() - start.getDegrees();
 
         if (angle > 180) {
             angle -= 360;
         } else if (angle < -180) {
             angle += 360;
+        }
+
+        if (totalRotation > 180) {
+            totalRotation -= 360;
+        } else if (totalRotation < -180) {
+            totalRotation += 360;
         }
 
         if (Math.abs(angle) < leniency.getDegrees()) {
             RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().stop();
         } else {
-            RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().spin(angle / 180);
+            RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().spin(
+                (angle / 180) * Math.PI * (Math.max(0.1, 1 - Math.abs(angle / totalRotation)))
+            );
         }
     }
 
     @Override
     public boolean isFinished() {
-        double angle = target.getDegrees() - Pigeon.getPigeon(ModuleConstants.PIGEON_ID).getYawPitchRoll()[0];
+        double currentAngle = Pigeon.getPigeon(ModuleConstants.PIGEON_ID).getYawPitchRoll()[0];
 
-        if (angle > 180) {
-            angle -= 360;
-        } else if (angle < -180) {
-            angle += 360;
-        }
+        //Return true if the angle is within the leniency, or if it's overshot.
+        boolean inLenciency = Math.abs(target.getDegrees() - currentAngle) < leniency.getDegrees();
+        boolean overshot = Math.abs(target.getDegrees() - start.getDegrees()) < Math.abs(target.getDegrees() - currentAngle);
 
-        return Math.abs(angle) < leniency.getDegrees();
+        return inLenciency || overshot;
     }
 }

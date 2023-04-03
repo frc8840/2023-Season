@@ -3,11 +3,13 @@ package frc.robot;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.IntakeCommand;
 import frc.robot.commands.auto.PlacePiece;
 import frc.robot.commands.auto.general.Wait;
+import frc.robot.commands.auto.movement.RotateTo;
 import frc.robot.commands.auto.movement.SimpleForwards;
 import frc.robot.commands.auto.movement.SmallRotate;
 import frc.robot.commands.auto.movement.StopDrive;
@@ -27,8 +29,8 @@ public class AutonomousContainer {
                 public static final String SEG_2 = "testing_seg_2.json";
             }
             public static class TopCorner {
-                public static final String SEG_1 = "top_corner_seg_1.json";
-                public static final String SEG_2 = "top_corner_seg_2.json";
+                public static final String SEG_1 = "top_seg_1.json";
+                public static final String SEG_2 = "top_seg_2.json";
             }
         }
 
@@ -87,7 +89,8 @@ public class AutonomousContainer {
             }),
             PathConjugate.command(new SmallRotate()),
             PathConjugate.command(new Wait(400)),
-            PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.Testing.SEG_1)),
+            PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.TopCorner.SEG_1)),
+            PathConjugate.command(new StopDrive()),
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm Intake!");
             }),
@@ -98,7 +101,8 @@ public class AutonomousContainer {
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm back!");
             }),
-            PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.Testing.SEG_2)),
+            PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.TopCorner.SEG_2)),
+            PathConjugate.command(new StopDrive()),
             PathConjugate.runOnce(() -> {
                 Logger.Log("TODO: Arm place!");
             }),
@@ -118,8 +122,18 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        PathPlanner.addAuto("Rotation", new PathPlanner(
+            PathConjugate.runOnce(() -> {
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
+            }),
+            PathConjugate.command(new SmallRotate()),
+            PathConjugate.command(new Wait(400)),
+            PathConjugate.command(new RotateTo(Rotation2d.fromDegrees(90), Rotation2d.fromDegrees(5))),
+            PathConjugate.command(new StopDrive())
+        ));
+
         //TODO: REMOVE
-        PathPlanner.selectAuto("TopCorner");
+        PathPlanner.selectAuto("Rotation");
     }
 
     static void updateAboutAutonomousLocation() {
