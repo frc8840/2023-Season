@@ -44,5 +44,4 @@ public class SimpleForwards extends CommandBase {
         return System.currentTimeMillis() - startTime >= ms;
     }
 
-
 }

@@ -46,7 +46,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     public static enum ArmState {
         RESTING(
-            Rotation2d.fromDegrees(10), 
+            Rotation2d.fromDegrees(2), 
             Rotation2d.fromDegrees(0)
         ),
         INTAKE_FLOOR(
@@ -58,24 +58,24 @@ public class ArmSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(0)
         ),
         PLACING_HYBRID(
-            Rotation2d.fromDegrees(135.64), 
-            Rotation2d.fromDegrees(-26.86)
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
         ),
         PLACING_MIDDLE_CONE(
-            Rotation2d.fromDegrees(135.64),
-            Rotation2d.fromDegrees(-26.86)
+            Rotation2d.fromDegrees(111.251),
+            Rotation2d.fromDegrees(-59.062)
         ),
         PLACING_MIDDLE_CUBE(
-            Rotation2d.fromDegrees(84.28), 
-            Rotation2d.fromDegrees(-25.14)
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
         ),
         PLACING_UPPER_CONE(
             Rotation2d.fromDegrees(158.21), 
             Rotation2d.fromDegrees(-132.64)
         ),
         PLACING_UPPER_CUBE(
-            Rotation2d.fromDegrees(108.99), 
-            Rotation2d.fromDegrees(-67.64)
+            Rotation2d.fromDegrees(0), 
+            Rotation2d.fromDegrees(0)
         );
 
         private Rotation2d baseAngle;
@@ -97,7 +97,7 @@ public class ArmSubsystem extends SubsystemBase {
         new Translation2d(Measurements.Robot.LENGTH / 2, Measurements.Robot.BASE_HEIGHT)
     };
 
-    public static final ArmStatus ARM_STATUS = ArmStatus.NO_ARM;
+    public static final ArmStatus ARM_STATUS = ArmStatus.BOTH;
 
     private static final double MAX_BASE_SPEED = 0.8;
     private static final double MAX_ELBOW_SPEED = 0.8;
@@ -369,6 +369,13 @@ public class ArmSubsystem extends SubsystemBase {
 
     public boolean atPosition() {
         return isAtSetpointPosition() || atForceStopPosition();
+    }
+
+    public boolean isAtPosition(ArmState state, Rotation2d leniency) {
+        boolean baseError = Math.abs(getBaseAngle() - state.baseAngle.getDegrees()) < leniency.getDegrees();
+        boolean elbowError = Math.abs(getRelativeElbowAngle() - state.elbowAngle.getDegrees()) < leniency.getDegrees();
+
+        return baseError && elbowError;
     }
 
     public void reportToNetworkTables() {

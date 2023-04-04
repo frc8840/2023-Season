@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.utils.ModuleConstants;
+import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.utils.controllers.Pigeon;
 
 public class PIDRotate extends CommandBase {
@@ -13,7 +14,7 @@ public class PIDRotate extends CommandBase {
     private Rotation2d start;
     private Rotation2d leniency;
 
-    private PIDController pid;
+    public static PIDController pid = new PIDController(0.2, 0, 0);
 
     private double maxDegreesPerSecond = 90;
 
@@ -34,8 +35,7 @@ public class PIDRotate extends CommandBase {
     @Override
     public void initialize() {
         start = Rotation2d.fromDegrees(Pigeon.getPigeon(ModuleConstants.PIGEON_ID).getYawPitchRoll()[0]);
-
-        pid = new PIDController(0.2, 0, 0);
+        Logger.Log("PIDRotate", "Starting PIDRotate to " + target.getDegrees() + " degrees.");
     }
 
     @Override

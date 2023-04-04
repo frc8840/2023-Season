@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.intake.GrabberSubsystem;
 import frc.team_8840_lib.info.console.Logger;
 
 public class PlacePiece extends CommandBase {
@@ -17,6 +18,7 @@ public class PlacePiece extends CommandBase {
     @Override
     public void execute() {
         //etc
+        GrabberSubsystem.getInstance().outtake(0.1);
     }
 
     @Override

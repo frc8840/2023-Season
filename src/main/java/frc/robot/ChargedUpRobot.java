@@ -9,7 +9,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.auto.movement.PIDRotate;
 import frc.robot.utils.Measurements;
+import frc.robot.utils.ModuleConstants;
 import frc.team_8840_lib.info.console.Logger;
 import frc.team_8840_lib.input.communication.CommunicationManager;
 import frc.team_8840_lib.listeners.EventListener;
@@ -17,6 +19,7 @@ import frc.team_8840_lib.listeners.Robot;
 import frc.team_8840_lib.pathing.PathPlanner;
 import frc.team_8840_lib.pathing.PathConjugate.ConjugateType;
 import frc.team_8840_lib.utils.GamePhase;
+import frc.team_8840_lib.utils.controllers.Pigeon;
 
 public class ChargedUpRobot extends EventListener {
 
@@ -114,6 +117,23 @@ public class ChargedUpRobot extends EventListener {
 
                 boolean hasRotationGoal = PathPlanner.getSelectedAuto().current().getPath().hasRotationGoal();
                 Rotation2d rotationGoal = PathPlanner.getSelectedAuto().current().getPath().getRotationGoal();
+                Rotation2d currentRotation = Rotation2d.fromDegrees(Pigeon.getPigeon(ModuleConstants.PIGEON_ID).getYawPitchRoll()[0]);
+
+                double rotation = 0;
+
+                if (hasRotationGoal) {
+                    rotation = PIDRotate.pid.calculate(currentRotation.getDegrees(), rotationGoal.getDegrees()) * 2;
+                    
+                    rotation /= 180;
+
+                    if (Math.abs(rotation) > 2) {
+                        rotation = Math.signum(rotation) * 2;
+                    }
+
+                    if (Math.abs(rotationGoal .getDegrees() - currentRotation.getDegrees()) < 5) {
+                        rotation = 0;
+                    }
+                }
 
                 pose = new Pose2d( 
                     Units.inchesToMeters(Measurements.Field.WIDTH) - pose.getX(), 
@@ -137,7 +157,7 @@ public class ChargedUpRobot extends EventListener {
                 translation.times(1.1);
 
                 //Use pose to calculate the swerve module states
-                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, 0, true, Robot.isReal());
+                RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().drive(translation, rotation, true, Robot.isReal());
 
                 //Update NT robot
                 CommunicationManager.getInstance().updateRobotPose(pose);
