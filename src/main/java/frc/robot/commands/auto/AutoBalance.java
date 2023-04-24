@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
@@ -10,6 +11,7 @@ import frc.team_8840_lib.utils.controllers.Pigeon;
 public class AutoBalance extends CommandBase {
     public static enum MoveState { 
         TOWARDS_CHARGE_STATION,
+        SLOW_UP,
         BALANCE,
         IDLE;
     }
@@ -17,8 +19,11 @@ public class AutoBalance extends CommandBase {
     private final double levelDegree = 6;
     private final double chargeStationDegree = 13;
 
-    private final double fastSpeed = 3; //m/s
-    private final double slowSpeed = 1; //m/s
+    private final double confirmationTime = 0.2;
+
+    private final double fastSpeed = 5; //ft/s
+    private final double slowSpeed = 2; //ft/s
+    private final double adjustmentSpeed = 0.5;
 
     private double secondsToTicks(double seconds) {
         return seconds / Robot.DELTA_TIME;
@@ -33,7 +38,12 @@ public class AutoBalance extends CommandBase {
         // Use addRequirements() here to declare subsystem dependencies.
     }
 
-    public double getTilt() {
+    public AutoBalance() {
+        state = MoveState.TOWARDS_CHARGE_STATION;
+        tickCounter = 0;
+    }
+
+    public static double getTilt() {
         double[] yaw_pitch_roll = Pigeon.getPigeon(42).getYawPitchRoll();
         double pitch = yaw_pitch_roll[1];
         double roll = yaw_pitch_roll[2];
@@ -50,41 +60,68 @@ public class AutoBalance extends CommandBase {
         //TODO: TEST THIS CODE.
         DriveSubsystem drive = RobotContainer.getInstance().getDriveSubsystem();
 
+        double speed = 0;
+
         if (state == MoveState.TOWARDS_CHARGE_STATION) {
+            if (getTilt() > chargeStationDegree) {
+                tickCounter++;
+            }
+
+            speed = fastSpeed;
+
+            if (tickCounter > secondsToTicks(confirmationTime)) {
+                state = MoveState.SLOW_UP;
+                tickCounter = 0;
+
+                speed = slowSpeed;
+            }
+        } else if (state == MoveState.SLOW_UP) {
+            if (getTilt() < levelDegree) {
+                tickCounter++;
+            }
+
+            if (tickCounter > secondsToTicks(confirmationTime)) {
+                state = MoveState.BALANCE;
+                tickCounter = 0;
+
+                speed = 0;
+            }
+        } else if (state == MoveState.BALANCE) {
+            if (Math.abs(getTilt()) <= levelDegree / 2) {
+                tickCounter++;
+            }
+
+            if (getTilt() >= levelDegree) {
+                speed = -adjustmentSpeed;
+            } else if (getTilt() <= -levelDegree) {
+                speed = adjustmentSpeed;
+            }
+
+            if (tickCounter > secondsToTicks(confirmationTime)) {
+                state = MoveState.IDLE;
+                tickCounter = 0;
+                speed = 0;
+            }
+        } else {
+            speed = 0;
+        }
+
+        if (Math.abs(speed) > 0.01) {
             drive.getSwerveDrive().drive(
                 new Translation2d(
-                    fastSpeed, 
+                    speed, 
                     0
                 ), 
                 0, 
                 true, 
                 Robot.isReal()
             );
-
-            if (secondsToTicks(1) <= tickCounter) {
-                state = MoveState.BALANCE;
-                tickCounter = 0;
-            }
-        } else if (state == MoveState.BALANCE) {
-            double tilt = getTilt();
-
-            double speed = 0;
-
-            if (tilt > levelDegree) {
-                speed = slowSpeed;
-            } else if (tilt < levelDegree) {
-                speed = -slowSpeed;
-            }
-
-            drive.getSwerveDrive().drive(
-                new Translation2d(speed, 0), 
-                0, 
-                true, 
-                Robot.isReal()
-            );
+        } else {
+            drive.getSwerveDrive().stop();
         }
-        
-        tickCounter++;
+
+        SmartDashboard.putString("AutoBalance", state.name());
+        SmartDashboard.updateValues();
     }
 
     @Override
