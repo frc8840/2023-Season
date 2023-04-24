@@ -30,31 +30,37 @@ public final class Main {
    */
     public static void main(String... args) {
         DisplayContainer.init();
-
+        
+        //Check if in testing.
         if (!testing) {
             //Assign the listener to ChargedUpRobot
             Robot.assignListener(new ChargedUpRobot());
 
+            //Get the operating system.
             String os = System.getProperty("os.name");
+            //Print to the console.
             System.out.println("[MAIN] Using OS " + os + ".");
             if (os.startsWith("Mac OS X")) {
                 //Logger will write to the default folder path on the roboRIO (~/8840applogs)
                 Logger.setWriter(new FileWriter());
+                //Print to the console.
                 System.out.println("[MAIN] Initialized with FileWriter.");
             } else {
-                //Don't log if not on the test machine.
+                //Don't log if not on the test machine... should've changed it over and actually used the logger.
                 Logger.setWriter(new EmptyLogger());
+                //Print to the console.
                 System.out.println("[MAIN] Initialized with EmptyLogger.");
             }
 
             //Start the robot
             RobotBase.startRobot(Robot::new);
         } else {
-            //RobotBase.startRobot(ChargedUpRobotTesting::new);
+            //Few testing methods. Ignore these.
 
+            //RobotBase.startRobot(ChargedUpRobotTesting::new);
+            
             Robot.assignListener(new SingularModuleTesting());
 
-            //Logger will write to the default folder path on the roboRIO (~/8840applogs)
             Logger.setWriter(new EmptyLogger());
 
             //Start the robot

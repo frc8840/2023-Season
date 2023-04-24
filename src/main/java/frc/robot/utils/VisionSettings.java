@@ -8,6 +8,7 @@ import edu.wpi.first.math.util.Units;
 public class VisionSettings {
     public static final String CAMERA_NAME = "main_camera";
 
+    //Should be camera position, but never got time to set it.
     public static final Transform3d cameraPosition = new Transform3d(
         new Translation3d(
             (-Measurements.Robot.WIDTH / 2) + Units.inchesToMeters(5.5), //Horizontal distance from the center of the robot to the camera.

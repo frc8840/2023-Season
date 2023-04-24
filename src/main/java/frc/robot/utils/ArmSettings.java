@@ -24,8 +24,9 @@ public class ArmSettings {
 
         public static double GEAR_RATIO = 192 / 1; //For every 1 rotation of the arm, the motor rotates 120 times.
 
-        public static final double armLengthMeters = Units.inchesToMeters(25);
+        public static final double armLengthMeters = Units.inchesToMeters(25); //...not accurate. never updated this.
 
+        //never used these
         //What we'll consider the "0°" position of the arm.
         public static final double LOWER_BOUND_DEGREES = 135;
         //What we'll consider the max position of the arm.
@@ -44,7 +45,7 @@ public class ArmSettings {
 
         public static double GEAR_RATIO = 192 / 1; //For every 1 rotation of the arm, the motor rotates 120 times.
 
-        public static final double armLengthMeters = Units.inchesToMeters(31);
+        public static final double armLengthMeters = Units.inchesToMeters(31); //again, not accurate lol
     }
 
     public static class Grabber {

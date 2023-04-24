@@ -9,18 +9,23 @@ import frc.team_8840_lib.utils.controllers.swerve.structs.PIDStruct;
 
 public class ConfigureSettings {
     
+    /**
+     * Gets the settings for the swerve drive.
+     * @return The settings for the swerve drive.
+     */
     public static SwerveSettings getSwerveDriveSettings() {
+        //Declare a new SwerveSettings object.
         SwerveSettings settings = new SwerveSettings(SwerveType.SPARK_MAX);
 
         //Adjust a few PID settings to the type, but we'll have to edit down below a few things.
         settings.defaultAdjustToType();
 
         //Track width is 18.75in, and wheel base is 22.75in.
+        //Actually this isn't accurate, I should've updated this, this might be why a few things might be a lil off.
         settings.trackWidth = Units.inchesToMeters(18.75);
         settings.wheelBase = Units.inchesToMeters(22.75);
 
         //We know the wheel diameter, so we'll set it here.
-        //TODO: Ask fabrication or design teams for the precise wheel diameter (again).
         settings.wheelDiameter = Units.inchesToMeters(3.94);
 
         //Drive Gear Ratio is 6.75 to 1
@@ -29,6 +34,7 @@ public class ConfigureSettings {
         settings.angleGearRatio = 150.0/7.0;
 
         if (Robot.isReal()) {
+            //Set the angle offsets for each module.
             settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_LEFT.getIndex()] = ModuleConstants.TopLeft.OFFSET;
             settings.angleOffsets[SwerveGroup.ModuleIndex.kTOP_RIGHT.getIndex()] = ModuleConstants.TopRight.OFFSET;
             
@@ -38,13 +44,17 @@ public class ConfigureSettings {
             settings.angleOffsets = new double[] {0,0,0,0};
         }
 
+        //Gyro is inverted.
         settings.invertGyro = true;
 
+        //CanCoder is inverted.
         settings.canCoderInverted = true;
+        //Drive and turn are not inverted.
         settings.turnInverted = false;
         settings.driveInverted = false;
 
         if (Robot.isReal()) {
+            //If real, set the PID values.
             settings.drivePID = new PIDStruct(0.025, 0, 0, 0);
             settings.turnPID = new PIDStruct(0.012, 0, 0, 0);
 
@@ -53,9 +63,10 @@ public class ConfigureSettings {
             settings.driveKS = 0.0;
         }
         
+        //We'll set the max speed to the max speed of the mk4i l2 NEO since that's what we're using.
         settings.maxSpeed = SwerveSettings.SDS.MK4i.L2.maxSpeed_NEO;
 
-        //We don't want to do manual conversion.
+        //We don't want to do manual conversion if the robot is real.
         settings.doManualConversion = Robot.isSimulation();
         //We want to use manual offset.
         settings.manualOffset = true;

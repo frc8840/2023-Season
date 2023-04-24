@@ -66,6 +66,10 @@ public class Measurements {
             public static final double lengthOfCubeStation = 18.25;
             public static final double lengthOfInnerConeSection = 47.75;
 
+            /**
+             * Get the dimensions of the blue alliance's grid. Can be flipped to get the red alliance's grid.
+             * @return An array of rectangles representing the dimensions of the blue alliance's grid.
+             */
             public static final RectangleBounds[] getBlueDimensionsList() {
                 final double generalTopRowX = 0;
                 final double middleRowX = generalTopRowX + Measurements.Grid.Rows.topRowWidth;

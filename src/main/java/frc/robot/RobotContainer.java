@@ -25,17 +25,21 @@ public class RobotContainer {
     public RobotContainer() {
         instance = this;
 
+        //Create new instances of all of the subsystems.
         driveSubsystem = new DriveSubsystem();
         visionSubsystem = new VisionSubsystem();
         armSubsystem = new ArmSubsystem();
         grabberSubsystem = new GrabberSubsystem();
 
+        //Set the default command for the drive subsystem to XboxDrive.
         driveSubsystem.setDefaultCommand(
             new XboxDrive(driveSubsystem)
         );
 
+        //Create a new PS4Operator command since we're using it in multiple places.
         PS4Operator operator = new PS4Operator(grabberSubsystem, armSubsystem);
 
+        //Set the default commands for grabber and arm to the PS4Operator command.
         grabberSubsystem.setDefaultCommand(
             operator
         );
@@ -50,6 +54,8 @@ public class RobotContainer {
     }
 
     public void onPhaseChange() {
+        //On game phase, change the brake mode of the drive subsystem.
+        //Also, reset the odometry if we're in autonomous.
         GamePhase phase = GamePhase.getCurrentPhase();
 
         if (phase == GamePhase.Autonomous) {

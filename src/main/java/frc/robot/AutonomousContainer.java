@@ -5,21 +5,17 @@ import java.nio.file.Path;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.IntakeCommand;
 import frc.robot.commands.auto.PlacePiece;
-import frc.robot.commands.auto.AutoBalance.MoveState;
 import frc.robot.commands.auto.arm.ArmSlightDownwardsPlace;
 import frc.robot.commands.auto.arm.MoveArmToPosition;
 import frc.robot.commands.auto.arm.StopArmMovement;
 import frc.robot.commands.auto.general.Wait;
-import frc.robot.commands.auto.movement.PIDRotate;
 import frc.robot.commands.auto.movement.RotateTo;
 import frc.robot.commands.auto.movement.SimpleForwards;
 import frc.robot.commands.auto.movement.SmallRotate;
 import frc.robot.commands.auto.movement.StopDrive;
-import frc.robot.commands.auto.movement.StupidRotate;
 import frc.robot.commands.auto.placing.AutoShoot;
 import frc.robot.commands.auto.placing.AutoShoot.ShootType;
 import frc.robot.subsystems.arm.ArmSubsystem.ArmState;
@@ -104,6 +100,10 @@ public class AutonomousContainer {
         
         String home = System.getProperty("user.home");
 
+        /**
+         * This auto shoots mid, then drives forward.
+         * This is an old auto that we don't use anymore since we changed to cone only.
+         */
         PathPlanner.addAuto("Mid_Shoot_Forward", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 SmartDashboard.putString("Auto", "Started");
@@ -117,14 +117,26 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        /**
+         * This auto moves the arm to the high position.
+         * This auto was generally used in the middle position, or the bottom.
+         */
         PathPlanner.addAuto("Place_High", new PathPlanner(
             place(ArmState.PLACING_UPPER_CONE)
         ));
 
+        /**
+         * This auto moves the arm to the middle position.
+         */
         PathPlanner.addAuto("Place_Mid", new PathPlanner(
             place(ArmState.PLACING_MIDDLE_CONE)
         ));
 
+        /**
+         * This auto is generally testing and was not used in the season.
+         * This auto is (in theory) a two piece auto, but we never got the time to test it.
+         * It was not used in competition.
+         */
         PathPlanner.addAuto("FullTopCorner", new PathPlanner(
             //Move the arm up
             place(ArmState.PLACING_UPPER_CONE),
@@ -145,7 +157,7 @@ public class AutonomousContainer {
                 //PathConjugate.command(new StupidRotate(Rotation2d.fromDegrees(5))),
                 //PathConjugate.command(new RotateTo(Rotation2d.fromDegrees(0), Rotation2d.fromDegrees(5))),
                 //PathConjugate.command(new StopDrive()),
-                PathConjugate.command(new StupidRotate(Rotation2d.fromDegrees(5))),
+                PathConjugate.command(new RotateTo(Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(5))),
                 PathConjugate.command(new StopDrive()),
                 PathConjugate.loadPathFromFile(Path.of(home, Files.FOLDER, Files.General.TopCorner.SEG_2)),
                 PathConjugate.command(new StopDrive()),
@@ -158,6 +170,9 @@ public class AutonomousContainer {
             // }
         ));
 
+        /**
+         * This auto is meant for testing. This allowed the user to load paths, then test them without having to change code.
+         */
         PathPlanner.addAuto("Testing", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
@@ -167,17 +182,23 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        /**
+         * Rotation testing.
+         */
         PathPlanner.addAuto("Rotation", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
             }),
             PathConjugate.command(new SmallRotate()),
             PathConjugate.command(new Wait(400)),
-            PathConjugate.command(new StupidRotate(Rotation2d.fromDegrees(5))),
+            PathConjugate.command(new RotateTo(Rotation2d.fromDegrees(180), Rotation2d.fromDegrees(5))),
             PathConjugate.command(new StopDrive()),
             onFinish
         ));
-
+        
+        /**
+         * Place the code on the top row, then taxi out (substation side).
+         */
         PathPlanner.addAuto("Upper_Cone_Top", new PathPlanner(
             place(ArmState.PLACING_UPPER_CONE),
             //Reset the drive base so it'll actually move
@@ -193,6 +214,9 @@ public class AutonomousContainer {
             }
         ));
 
+        /**
+         * Place the code on the middle row, then taxi out (substation side).
+         */
         PathPlanner.addAuto("Middle_Cone_Top", new PathPlanner(
             place(ArmState.PLACING_MIDDLE_CONE),
             //Reset the drive base so it'll actually move
@@ -208,6 +232,9 @@ public class AutonomousContainer {
             }
         ));
 
+        /**
+         * Place the code on the top row, then taxi out (bottom side).
+         */
         PathPlanner.addAuto("Top_Cone_Bottom", new PathPlanner(
             place(ArmState.PLACING_UPPER_CONE),
             //Reset the drive base so it'll actually move
@@ -225,6 +252,10 @@ public class AutonomousContainer {
             }
         ));
 
+        /**
+         * Due to issues with the planner code, a seperate path had to be made for the red side.
+         * As of 4/23/23, the fix has not been released yet, but will be soon.
+         */
         PathPlanner.addAuto("RED_Top_Cone_Bottom", new PathPlanner(
             place(ArmState.PLACING_UPPER_CONE),
             //Reset the drive base so it'll actually move
@@ -240,6 +271,10 @@ public class AutonomousContainer {
             }
         ));
 
+        /**
+         * Place the code on the middle row, then taxi out (bottom side).
+         * It was accidentally misnamed. It's actually the middle row.
+         */
         PathPlanner.addAuto("Bottom_Cone_Bottom", new PathPlanner(
             place(ArmState.PLACING_MIDDLE_CONE),
             //Reset the drive base so it'll actually move
@@ -257,6 +292,10 @@ public class AutonomousContainer {
             }
         ));
 
+        /**
+         * Bottom side, just movement.
+         * Never used.
+         */
         PathPlanner.addAuto("Bottom_Just_Movement", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
@@ -270,6 +309,9 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        /**
+         * Top side, just movement.
+         */
         PathPlanner.addAuto("Top_Just_Movement", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
@@ -281,6 +323,9 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        /**
+         * A path that should just engage the charge station.
+         */
         PathPlanner.addAuto("Just_Engage", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
@@ -292,6 +337,9 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        /**
+         * Place the code on the top row, then engage the charge station.
+         */
         PathPlanner.addAuto("Top_Cone_Then_Engage", new PathPlanner(
             place(ArmState.PLACING_UPPER_CONE),
             new PathConjugate[] {
@@ -306,6 +354,9 @@ public class AutonomousContainer {
             }
         ));
 
+        /**
+         * Place the code on the middle row, then engage the charge station.
+         */
         PathPlanner.addAuto("Just_Balance", new PathPlanner(
             PathConjugate.runOnce(() -> {
                 RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().triggerNoOptimization();
@@ -316,6 +367,9 @@ public class AutonomousContainer {
             onFinish
         ));
 
+        /**
+         * Place the code on the middle row, then balance on the charge station.
+         */
         PathPlanner.addAuto("Top_Cone_Then_Balance", new PathPlanner(
             place(ArmState.PLACING_UPPER_CONE),
             new PathConjugate[] {
@@ -329,10 +383,15 @@ public class AutonomousContainer {
             }
         ));
 
-        //TODO: REMOVE
+        //This sets the default autonomous/selects it.
+        //This is useful if (Jaiden) is forgetful.
         PathPlanner.selectAuto("Place_High");
     }
 
+    /**
+     * This method just updates the SmartDashboard with the current autonomous.
+     * It's called in a few places.
+     */
     static void updateAboutAutonomousLocation() {
         SmartDashboard.putString("Auto Location", PathPlanner.getSelectedAutoName());
         SmartDashboard.putString("Autonomous Status", "Started!");
