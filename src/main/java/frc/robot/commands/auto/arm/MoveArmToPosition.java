@@ -27,6 +27,6 @@ public class MoveArmToPosition extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return ArmSubsystem.getInstance().isAtPosition(state, Rotation2d.fromDegrees(2)) || Robot.isSimulation();
+        return ArmSubsystem.getInstance().isAtPosition(state, Rotation2d.fromDegrees(8)) || Robot.isSimulation();
     }
 }

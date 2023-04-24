@@ -17,7 +17,7 @@ public class ArmSlightDownwardsPlace extends CommandBase {
      * ==========|
      */
     public static final double speed = 0.2; 
-    public static final double time = 300;
+    public static final double time = 750;
 
     public ArmSlightDownwardsPlace() {
         

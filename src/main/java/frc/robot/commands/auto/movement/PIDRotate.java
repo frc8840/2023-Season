@@ -67,8 +67,8 @@ public class PIDRotate extends CommandBase {
 
         //Return true if the angle is within the leniency, or if it's overshot.
         boolean inLenciency = Math.abs(target.getDegrees() - currentAngle) < leniency.getDegrees();
-        boolean overshot = Math.abs(target.getDegrees() - start.getDegrees()) < Math.abs(target.getDegrees() - currentAngle);
+        //boolean overshot = Math.abs(target.getDegrees() - start.getDegrees()) < Math.abs(target.getDegrees() - currentAngle);
 
-        return inLenciency || overshot;
+        return inLenciency; //|| overshot;
     }
 }
