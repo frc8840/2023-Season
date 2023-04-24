@@ -236,7 +236,15 @@ public class PS4Operator extends CommandBase {
             place_type = "CUBE";
         }
 
-        SmartDashboard.putString("ARM_TO", level + " " + place_type);
+        String updateString = level + " " + place_type;
+
+        if (place_type == "CUBE" && level != "HYBRID") {
+            updateString = "SUBSTATION OR CUBE";
+        }
+
+        SmartDashboard.putString("ARM_TO", updateString);
+        CommunicationManager.getInstance().updateInfo("arm", "going_to", updateString);
+        SmartDashboard.updateValues();
     }
 
     private boolean interruptedAutoAlign = false;
@@ -375,6 +383,9 @@ public class PS4Operator extends CommandBase {
         );
     }
 
+    int sas = 0;
+    boolean armPressed = false;
+
     @Override
     public void execute() {
         //Auto Align Chooser
@@ -428,6 +439,8 @@ public class PS4Operator extends CommandBase {
             }
 
             updateSelected();
+        } else if (controller.getPOV() < 0) {
+            justMoved = false;
         }
 
         if (controller.getR2Button()) {
@@ -459,22 +472,40 @@ public class PS4Operator extends CommandBase {
                 }
             } else if (this.armOperationMode == ArmOperationMode.OPEN_LOOP_MANUAL || this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
                 if (Math.abs(controller.getLeftY()) > 0.1) {
-                    armSubsystem.baseOpenLoop(-controller.getLeftY() * 0.6);
+
+                    boolean limitHit = false;
+
+                    if (armSubsystem.getLastState() == ArmState.PLACING_UPPER_CONE) {
+                        if (armSubsystem.getBaseAngle() > 170) {
+                            limitHit = true;
+                        }
+                    }
+
+                    if (!limitHit || controller.getLeftY() > 0) {
+                        armSubsystem.baseOpenLoop(-controller.getLeftY() * 0.6);
+                    } else {
+                        armSubsystem.baseOpenLoop(0);
+                    }
                     justWasControllingBase = true;
                 } else if (justWasControllingBase) {
                     armSubsystem.baseOpenLoop(0);
                     justWasControllingBase = false;
                 }
 
-                if (Math.abs(controller.getRightY()) > 0.1) {
+                if (Math.abs(controller.getRightY()) > 0.1 && armSubsystem.getLastState() != ArmState.PLACING_UPPER_CONE) {
                     armSubsystem.elbowOpenLoop(controller.getRightY() * 0.6);
                     justWasControllingElbow = true;
                 } else if (justWasControllingElbow) {
                     armSubsystem.elbowOpenLoop(0);
                     justWasControllingElbow = false;
                 }
-            } else if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
-                if (controller.getR1ButtonPressed()) {
+            }
+            
+            if (this.armOperationMode == ArmOperationMode.PRESET_POSITIONS) {
+                if (controller.getR1ButtonPressed() ) {
+                    armPressed = true;
+                    sas++;
+                    CommunicationManager.getInstance().updateInfo("arm", "pressed", "did press " + sas);
                     String operationName = "none";
 
                     if (armLocation == ArmLocation.RESTING) {
@@ -520,6 +551,8 @@ public class PS4Operator extends CommandBase {
 
                     Logger.Log("[Arm] Moved arm into position of " + operationName);
                     CommunicationManager.getInstance().updateInfo("arm", "position_name", operationName);
+                } else if (!controller.getR1Button()) {
+                    armPressed = false;
                 }
             }
         }

@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.auto.AutoBalance;
 import frc.robot.commands.auto.movement.PIDRotate;
 import frc.robot.utils.Measurements;
 import frc.robot.utils.ModuleConstants;
@@ -84,6 +85,12 @@ public class ChargedUpRobot extends EventListener {
             CommunicationManager.getInstance().updateFieldObjectPose("SwerveRobot", RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().getPose());
 
             RobotContainer.getInstance().getDriveSubsystem().getSwerveDrive().updateFieldRobot();
+        }
+
+        //REMOVE
+        if (Pigeon.hasPigeon(ModuleConstants.PIGEON_ID) != null) {
+            CommunicationManager.getInstance().updateInfo("autobalance", "tilt", AutoBalance.getTilt());
+
         }
 
         CommandScheduler.getInstance().run();

@@ -14,7 +14,7 @@ public class GrabberSubsystem extends SubsystemBase {
         return instance;
     }
 
-    private static final boolean enabled = false;
+    private static final boolean enabled = true;
 
     public enum GrabberState {
         OPEN,
@@ -147,9 +147,9 @@ public class GrabberSubsystem extends SubsystemBase {
 
         if (state == GrabberState.ACTIVE) {
             if (direction == GrabberDirection.IN) {
-                grabberMotor.set(-0.5);
+                grabberMotor.set(-0.1);
             } else {
-                grabberMotor.set(customSpeed == 0 ? 0.1 : customSpeed);
+                grabberMotor.set(customSpeed == 0 ? 0.7 : customSpeed);
             }
         } else {
             grabberMotor.set(0);

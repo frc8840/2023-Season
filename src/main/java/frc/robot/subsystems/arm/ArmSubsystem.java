@@ -46,12 +46,12 @@ public class ArmSubsystem extends SubsystemBase {
 
     public static enum ArmState {
         RESTING(
-            Rotation2d.fromDegrees(2), 
+            Rotation2d.fromDegrees(0), 
             Rotation2d.fromDegrees(0)
         ),
         INTAKE_FLOOR(
-            Rotation2d.fromDegrees(148.64), 
-            Rotation2d.fromDegrees(-30.86)
+            Rotation2d.fromDegrees(170.016), 
+            Rotation2d.fromDegrees(-71.473)
         ),
         INTAKE_SUBSTATION(
             Rotation2d.fromDegrees(0), 
@@ -65,17 +65,17 @@ public class ArmSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(111.251),
             Rotation2d.fromDegrees(-59.062)
         ),
-        PLACING_MIDDLE_CUBE(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+        PLACING_MIDDLE_CUBE( //SUBSTATION
+            Rotation2d.fromDegrees(82.8562), 
+            Rotation2d.fromDegrees(-31.8749)
         ),
         PLACING_UPPER_CONE(
-            Rotation2d.fromDegrees(158.21), 
-            Rotation2d.fromDegrees(-132.64)
+            Rotation2d.fromDegrees(160.364), 
+            Rotation2d.fromDegrees(-142.460)
         ),
-        PLACING_UPPER_CUBE(
-            Rotation2d.fromDegrees(0), 
-            Rotation2d.fromDegrees(0)
+        PLACING_UPPER_CUBE( //SUBSTATION
+            Rotation2d.fromDegrees(82.8562), 
+            Rotation2d.fromDegrees(-31.8749)
         );
 
         private Rotation2d baseAngle;
@@ -128,6 +128,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     private double lastBaseSetpoint = 0;
     private double lastElbowSetpoint = 0;
+
+    private ArmState lastSetPosition = ArmState.RESTING;
 
     public ArmSubsystem() {
         instance = this;
@@ -286,6 +288,11 @@ public class ArmSubsystem extends SubsystemBase {
     public void setPosition(ArmState state) {
         setBasePosition(state.baseAngle);
         setElbowPosition(state.elbowAngle);
+        lastSetPosition = state;
+    }
+
+    public ArmState getLastState() {
+        return this.lastSetPosition;
     }
 
     public void stop() {
@@ -364,7 +371,7 @@ public class ArmSubsystem extends SubsystemBase {
         double baseError = Math.abs(getBaseAngle() - lastBaseForceStop);
         double elbowError = Math.abs(getRelativeElbowAngle() - lastElbowForceStop);
 
-        return baseError < 1 && elbowError < 1;
+        return baseError < 2 && elbowError < 2;
     }
 
     public boolean atPosition() {
